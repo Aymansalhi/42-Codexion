@@ -13,3 +13,4 @@
 - [Context Switching](https://denim-bosworth-b13.notion.site/Context-Switching-393e6e3c12ea8098a9d5fcb066356e99?source=copy_link)
 - [Race Conditions: A Precise Definition](https://denim-bosworth-b13.notion.site/Race-Conditions-A-Precise-Definition-394e6e3c12ea80b2bd4bdfef8733eba9?source=copy_link)
 - [What Is a Thread?](https://denim-bosworth-b13.notion.site/What-Is-a-Thread-395e6e3c12ea8096aa0ee490d555cdaa?source=copy_link)
+- [Thread Scheduling](https://denim-bosworth-b13.notion.site/Thread-Scheduling-395e6e3c12ea8055b209fd263466e091?source=copy_link)
