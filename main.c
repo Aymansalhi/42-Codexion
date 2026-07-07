@@ -3,17 +3,19 @@
 
 void *worker(void *arg)
 {
-	printf("Worker\n");
+	printf("Hello from the thread!\n");
 	return NULL;
 }
 
 int main()
 {
-	pthread_t t;
+	pthread_t thread;
 
-	pthread_create(&t, NULL, worker, NULL);
+	pthread_create(&thread, NULL, worker, NULL);
 
-	printf("Main\n");
+	pthread_join(thread, NULL);
+
+	printf("Main thread finished.\n");
 
 	return 0;
 }

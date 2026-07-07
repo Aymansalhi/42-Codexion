@@ -16,3 +16,4 @@
 - [Thread Scheduling](https://denim-bosworth-b13.notion.site/Thread-Scheduling-395e6e3c12ea8055b209fd263466e091?source=copy_link)
 - [Your First Thread: Creating and Managing Threads with pthread_create](https://denim-bosworth-b13.notion.site/Your-First-Thread-Creating-and-Managing-Threads-with-pthread_create-395e6e3c12ea8029a7b1eed1704b6e8a?source=copy_link)
 - [pthread_join: Waiting for Threads](https://denim-bosworth-b13.notion.site/pthread_join-Waiting-for-Threads-396e6e3c12ea80f3ae86cd77a2a93479?source=copy_link)
+- [Passing Data to Threads: The Role of void *](https://denim-bosworth-b13.notion.site/Passing-Data-to-Threads-The-Role-of-void-396e6e3c12ea80e288d9ed4d30813de2?source=copy_link)
