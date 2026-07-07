@@ -15,3 +15,4 @@
 - [What Is a Thread?](https://denim-bosworth-b13.notion.site/What-Is-a-Thread-395e6e3c12ea8096aa0ee490d555cdaa?source=copy_link)
 - [Thread Scheduling](https://denim-bosworth-b13.notion.site/Thread-Scheduling-395e6e3c12ea8055b209fd263466e091?source=copy_link)
 - [Your First Thread: Creating and Managing Threads with pthread_create](https://denim-bosworth-b13.notion.site/Your-First-Thread-Creating-and-Managing-Threads-with-pthread_create-395e6e3c12ea8029a7b1eed1704b6e8a?source=copy_link)
+- [pthread_join: Waiting for Threads](https://denim-bosworth-b13.notion.site/pthread_join-Waiting-for-Threads-396e6e3c12ea80f3ae86cd77a2a93479?source=copy_link)
