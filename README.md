@@ -18,3 +18,4 @@
 - [pthread_join: Waiting for Threads](https://denim-bosworth-b13.notion.site/pthread_join-Waiting-for-Threads-396e6e3c12ea80f3ae86cd77a2a93479?source=copy_link)
 - [Passing Data to Threads: The Role of void *](https://denim-bosworth-b13.notion.site/Passing-Data-to-Threads-The-Role-of-void-396e6e3c12ea80e288d9ed4d30813de2?source=copy_link)
 - [Thread Return Values](https://denim-bosworth-b13.notion.site/Thread-Return-Values-396e6e3c12ea80c89757f1bb980fbbf7?source=copy_link)
+- [Detached Threads](https://denim-bosworth-b13.notion.site/Detached-Threads-396e6e3c12ea80579c59e67f321895ed?source=copy_link)
