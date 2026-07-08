@@ -23,3 +23,4 @@
 - [Race Conditions](https://denim-bosworth-b13.notion.site/Race-Conditions-397e6e3c12ea80b6a074c81ca6ae75b6?source=copy_link)
 - [Mutexes](https://denim-bosworth-b13.notion.site/Mutexes-397e6e3c12ea806990edd8c67bdf8db3?source=copy_link)
 - [Critical Sections](https://denim-bosworth-b13.notion.site/Critical-Sections-397e6e3c12ea80a586b2f05d7fc82a32?source=copy_link)
+- [Deadlocks](https://denim-bosworth-b13.notion.site/Deadlocks-397e6e3c12ea801a9446efd638a24008?source=copy_link)
