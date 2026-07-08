@@ -24,3 +24,4 @@
 - [Mutexes](https://denim-bosworth-b13.notion.site/Mutexes-397e6e3c12ea806990edd8c67bdf8db3?source=copy_link)
 - [Critical Sections](https://denim-bosworth-b13.notion.site/Critical-Sections-397e6e3c12ea80a586b2f05d7fc82a32?source=copy_link)
 - [Deadlocks](https://denim-bosworth-b13.notion.site/Deadlocks-397e6e3c12ea801a9446efd638a24008?source=copy_link)
+- [Condition Variables](https://denim-bosworth-b13.notion.site/Condition-Variables-397e6e3c12ea8054b084d0763d81fdb1?source=copy_link)
