@@ -1,36 +1,13 @@
 #include <stdio.h>
-#include <pthread.h>
-#include <unistd.h>
+#include <sys/time.h>
 
-void *worker(void *arg)
+int main(void)
 {
-	printf("Hello from the thread! 0 \n");
-	return NULL;
-}
+    struct timeval tv;
 
-void *worker1(void *arg)
-{
-	printf("Hello from the thread! 1 \n");
-	return NULL;
-}
+    if (gettimeofday(&tv, NULL) == -1)
+        return (1);
 
-int main()
-{
-	pthread_t thread;
-
-	pthread_create(&thread, NULL, worker, NULL);
-
-	// pthread_join(thread, NULL);
-
-	pthread_t thread1;
-
-	pthread_create(&thread1, NULL, worker1, NULL);
-
-	// pthread_join(thread1, NULL);
-
-	printf("sleeping\n");
-	sleep(10);
-	printf("Main thread finished.\n");
-
-	return 0;
+    printf("Seconds      : %ld\n", tv.tv_sec);
+    printf("Microseconds : %ld\n", tv.tv_usec);
 }
