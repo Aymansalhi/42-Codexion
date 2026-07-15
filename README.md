@@ -1,5 +1,7 @@
 # 42-Codexion
 
+change mirr form headred 42 to molahrac
+
 ## thread lifecycle
 
 ```
