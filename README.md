@@ -1,5 +1,38 @@
 # 42-Codexion
 
+## thread lifecycle
+
+```
+Start Simulation
+      │
+      ▼
+Try to get 2 dongles
+      │
+      ▼
+Start Compiling
+      │
+      │  <-- time_to_compile -->
+      ▼
+Finish Compiling
+      │
+      ▼
+Debug
+      │
+      │  <-- time_to_debug -->
+      ▼
+Finish Debugging
+      │
+      ▼
+Refactor
+      │
+      │  <-- time_to_refactor -->
+      ▼
+Finish Refactoring
+      │
+      ▼
+Immediately try to get 2 dongles again
+```
+
 ## Resources
 
 - [the anatomy of execution](https://denim-bosworth-b13.notion.site/The-Anatomy-of-Execution-391e6e3c12ea806abdb7f1e5825bc9d1?source=copy_link)
