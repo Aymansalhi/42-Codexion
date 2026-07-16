@@ -6,16 +6,18 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/16 20:14:03 by mirr             ###   ########.fr       */
+/*   Updated: 2026/07/16 20:34:53 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
-/*  TODO1: what datastruct or algo im gonna use for this project for shudeler?*/
-/* back yp to fisrt of photo chat*/
+//@ -------------------------------------------- INCLUDS ------------
+# include <stdlib.h>
 
+
+//@ -------------------------------------------- STRUCTERS ---------
 typedef struct s_config
 {
 	int		number_of_coders;
