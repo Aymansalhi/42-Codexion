@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:15:58 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/16 20:19:01 by mirr             ###   ########.fr       */
+/*   Updated: 2026/07/16 20:28:13 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,7 @@
 
 int	main(int argc, char **argv)
 {
-	
+	t_config	*configs;
+
+	configs = ft_parsing_args(argc, argv);
 }
