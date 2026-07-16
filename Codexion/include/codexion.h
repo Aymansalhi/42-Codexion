@@ -6,21 +6,33 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/15 15:01:55 by mirr             ###   ########.fr       */
+/*   Updated: 2026/07/16 20:14:03 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
 # define CODEXION_H
 
-/*  TODO: build the full stctres  i have in this project What structures (structs) exist?*/
 /*  TODO1: what datastruct or algo im gonna use for this project for shudeler?*/
 /* back yp to fisrt of photo chat*/
 
-typedef struct xxx
+typedef struct s_config
 {
-    /* data */
-}           t_;
+	int		number_of_coders;
+
+	int		time_to_burnout;
+
+	int		time_to_compile;
+	int		time_to_debug;
+	int		time_to_refactor;
+
+	int		number_of_compiles_required;
+
+	int		dongle_cooldown;
+
+	char	*scheduler;
+}			t_config;
+
 
 
 #endif
