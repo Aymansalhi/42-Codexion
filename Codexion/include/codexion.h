@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/22 16:34:50 by mirr             ###   ########.fr       */
+/*   Updated: 2026/07/23 13:00:54 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 //@ -------------------------------------------- INCLUDS ------------
 # include <stdlib.h>
 # include <string.h>
-# include <stdio.h> // delete
+# include <stdio.h>
+# include <limits.h>
 
 
 
@@ -47,5 +48,11 @@ typedef struct s_config
 
 // @-------------------------------------------- PROTOTYPES ---------
 t_config	*ft_parsing_args(int argc, char **argv);
+
+
+// @-------------------------------------------- PROTOTYPES UTILS -----
+int			ft_strict_int(const char *str, long *out);
+void		ft_set_config_value(t_config *configs, long val, int i);
+int			ft_validate_field(long val, int field_id);
 
 #endif
