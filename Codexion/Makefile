@@ -1,10 +1,10 @@
 NAME := codexion
 
-SRC := src/main.c src/parsing.c
+SRC := src/main.c src/parsing.c utils/pars_utils.c 
 
 OBJ := $(SRC:.c=.o)
 
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -g -Wall -Wextra -Werror
 
 all: $(NAME)
 
