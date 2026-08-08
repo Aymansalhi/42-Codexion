@@ -6,12 +6,11 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:22:02 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/23 13:44:34 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/08 15:37:31 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
-
 
 void	ft_set_scheduler(t_config *configs, char *s)
 {

@@ -6,13 +6,11 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:15:58 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/23 13:34:01 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/08 15:37:57 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../include/codexion.h"
-
 
 void	print_config(t_config *configs)
 {
@@ -38,7 +36,6 @@ int	main(int argc, char **argv)
 	if (!configs)
 		return (EXIT_FAILURE);
 	print_config(configs);
-
 	free(configs);
 	return (EXIT_SUCCESS);
 }
