@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pars_utils.c                                       :+:      :+:    :+:   */
+/*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 12:10:39 by mirr              #+#    #+#             */
-/*   Updated: 2026/07/23 13:41:15 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/08 15:36:49 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
 
-
 int	ft_validate_field(long val, int field_id)
 {
-	if (field_id == 7)
+	if (field_id == 6 || field_id == 7)
 		return (val >= 0);
 	return (val > 0);
 }
