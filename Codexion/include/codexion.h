@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/09 00:16:33 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/09 23:00:37 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 # include <pthread.h>
 
 //@ -------------------------------------------- STRUCTERS ---------
-typedef struct s_state		t_state; //! implemnt this
+typedef struct s_state		t_state;
 typedef struct s_config		t_config;
 typedef struct s_coder		t_coder;
 typedef struct s_dongel		t_dongel;
@@ -79,7 +79,7 @@ struct s_queue
 
 // @-------------------------------------------- PROTOTYPES ---------
 t_config	*ft_parsing_args(int argc, char **argv);
-void		create_and_init_coders_and_dongles(t_state *state);
+int			create_and_init_coders_and_dongles(t_state *state);
 
 // @-------------------------------------------- PROTOTYPES UTILS -----
 int			ft_strict_int(const char *str, long *out);
