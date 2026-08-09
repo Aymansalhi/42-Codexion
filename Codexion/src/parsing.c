@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:22:02 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/08 15:37:31 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/09 23:33:51 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ t_config	*ft_parsing_args(int argc, char **argv)
 	while (i <= 7)
 	{
 		if (!ft_process_numeric_arg(configs, argv[i], i))
-			return (free(configs), NULL);
+			return (NULL);
 		i++;
 	}
 	if (!ft_validate_scheduler(argv[8]))
 		return (fprintf(stderr, "Error: Invalid scheduler: %s\n", argv[8]),
-			free(configs), NULL);
+			NULL);
 	ft_set_scheduler(configs, argv[8]);
 	return (configs);
 }

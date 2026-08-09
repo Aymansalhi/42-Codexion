@@ -4,7 +4,7 @@ SRC := src/main.c src/parsing.c utils/parsing_utils.c
 
 OBJ := $(SRC:.c=.o)
 
-CFLAGS := -g -Wall -Wextra -Werror
+CFLAGS := -g -Wall -Wextra -Werror -fsanitize=address
 
 all: $(NAME)
 
