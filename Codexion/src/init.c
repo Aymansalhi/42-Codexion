@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/16 20:15:58 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/09 00:17:00 by mirr             ###   ########.fr       */
+/*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
+/*   Updated: 2026/08/09 00:56:54 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
 
-int	main(int argc, char **argv)
+int	create_coders_and_dongles(t_state *state)
 {
-	t_state		state;
-
-	(void)argc;
-	state.cfg = ft_parsing_args(argc, argv);
-	if (!state.cfg)
+	state->coders = malloc(sizeof(t_coder) * state->cfg->number_of_coders);
+	if (!state->coders)
 		return (EXIT_FAILURE);
-	create_and_init_coders_and_dongles(&state);
-	free(state.cfg);
+	state->dongels = malloc(sizeof(t_dongel) * state->cfg->number_of_coders);
+	if (!state->dongels)
+		return (free(state->coders), EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
+
+int	create_and_init_coders_and_dongles(t_state *state)
+{
+	if (create_coders_and_dongles(state) == EXIT_FAILURE)
+		return (EXIT_FAILURE);
+
+	init_coders(state);
+	init_dongles(state);
 	return (EXIT_SUCCESS);
 }
