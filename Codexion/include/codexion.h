@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/10 00:57:21 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/10 01:24:29 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define INVALID_ARG "Invalid argument."
 # define INVALD_ARGS "Invalid number of arguments."
 # define INVALID_SCHEDULER "Invalid scheduler. Must be 'fifo' or 'edf'."
+# define MUTEX_DONGEL_ERROR "Failed to initialize mutex for dongel."
 
 //@ -------------------------------------------- INCLUDS ------------
 # include <stdlib.h>
