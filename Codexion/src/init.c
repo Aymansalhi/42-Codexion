@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/09 23:33:03 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/10 00:17:19 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	create_and_init_coders_and_dongles(t_state *state)
 		return (EXIT_FAILURE);
 
 	if (!init_dongles(state) || !init_coders(state))
-		return ()
-
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
