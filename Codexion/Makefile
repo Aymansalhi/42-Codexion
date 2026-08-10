@@ -1,6 +1,6 @@
 NAME := codexion
 
-SRC := src/main.c src/parsing.c utils/parsing_utils.c 
+SRC := src/main.c src/parsing.c utils/parsing_utils.c src/exit_clean.c
 
 OBJ := $(SRC:.c=.o)
 
