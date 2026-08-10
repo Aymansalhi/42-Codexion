@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 00:26:28 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/10 01:07:49 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/10 01:40:48 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ void	clean_memory(t_state *state)
 		free(state->dongels);
 	if (state->cfg)
 		free(state->cfg);
+	state->coders = NULL;
+	state->dongels = NULL;
+	state->cfg = NULL;
 }
 
 void	clean_and_print_err(char *err, char *details, int clean, t_state *state)
