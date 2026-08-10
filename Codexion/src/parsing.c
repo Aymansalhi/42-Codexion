@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:22:02 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/09 23:33:51 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/10 00:58:54 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	ft_process_numeric_arg(t_config *configs, char *arg, int i)
 	long	val;
 
 	if (ft_strict_int(arg, &val))
-		return (fprintf(stderr, "Error: Invalid argument: %s\n", arg), 0);
+		return (EXIT_FAILURE);
 	if (!ft_validate_field(val, i))
-		return (fprintf(stderr, "Error: Invalid argument: %s\n", arg), 0);
+		return (EXIT_FAILURE);
 	ft_set_config_value(configs, val, i);
 	return (1);
 }
@@ -32,35 +32,36 @@ int	ft_process_numeric_arg(t_config *configs, char *arg, int i)
 int	ft_validate_scheduler(const char *scheduler)
 {
 	if (!scheduler || !*scheduler)
-		return (0);
+		return (EXIT_FAILURE);
 	if (strcmp(scheduler, "fifo") == 0)
-		return (1);
+		return (EXIT_SUCCESS);
 	if (strcmp(scheduler, "edf") == 0)
-		return (1);
-	return (0);
+		return (EXIT_SUCCESS);
+	return (EXIT_FAILURE);
 }
 
-t_config	*ft_parsing_args(int argc, char **argv)
+int	ft_parsing_args(int argc, char **argv, t_state *state)
 {
 	int			i;
-	t_config	*configs;
 
 	if (argc != 9)
-		return (fprintf(stderr, "Error: Invalid number of arguments.\n"), NULL);
-	configs = (t_config *)malloc(sizeof(t_config));
-	if (!configs)
-		return (NULL);
-	memset(configs, 0, sizeof(t_config));
+		return (clean_and_print_err(INVALD_ARGS, NULL, 0, state), EXIT_FAILURE);
+	state->cfg = (t_config *)malloc(sizeof(t_config));
+	if (!state->cfg)
+		return (clean_and_print_err(MALLOC_ERROR, NULL, 0, state),
+			EXIT_FAILURE);
+	memset(state->cfg, 0, sizeof(t_config));
 	i = 1;
 	while (i <= 7)
 	{
-		if (!ft_process_numeric_arg(configs, argv[i], i))
-			return (NULL);
+		if (!ft_process_numeric_arg(state->cfg, argv[i], i))
+			return (clean_and_print_err(INVALID_ARG, argv[i], 1, state),
+				EXIT_FAILURE);
 		i++;
 	}
-	if (!ft_validate_scheduler(argv[8]))
-		return (fprintf(stderr, "Error: Invalid scheduler: %s\n", argv[8]),
-			NULL);
-	ft_set_scheduler(configs, argv[8]);
-	return (configs);
+	if (ft_validate_scheduler(argv[8]))
+		return (clean_and_print_err(INVALID_SCHEDULER, argv[8], 1, state),
+			EXIT_FAILURE);
+	ft_set_scheduler(state->cfg, argv[8]);
+	return (EXIT_SUCCESS);
 }
