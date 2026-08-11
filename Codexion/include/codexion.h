@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/10 01:24:29 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/11 10:48:56 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # define INVALD_ARGS "Invalid number of arguments."
 # define INVALID_SCHEDULER "Invalid scheduler. Must be 'fifo' or 'edf'."
 # define MUTEX_DONGEL_ERROR "Failed to initialize mutex for dongel."
+# define THREAD_CREATION_ERROR "Failed to create thread."
+# define THREAD_JOIN_ERROR "Failed to join thread."
 
 //@ -------------------------------------------- INCLUDS ------------
 # include <stdlib.h>
@@ -28,6 +30,7 @@
 # include <stdio.h>
 # include <limits.h>
 # include <pthread.h>
+# include <unistd.h>
 
 //@ -------------------------------------------- STRUCTERS ---------
 typedef struct s_state		t_state;
@@ -84,7 +87,7 @@ struct s_queue
 
 // @-------------------------------------------- PROTOTYPES ---------
 int			ft_parsing_args(int argc, char **argv, t_state *state);
-int			create_and_init_coders_and_dongles(t_state *state);
+int			init_coders_and_dongles(t_state *state);
 
 // @-------------------------------------------- PROTOTYPES UTILS -----
 int			ft_strict_int(const char *str, long *out);
@@ -98,5 +101,11 @@ void		clean_and_print_err(
 				char *details,
 				int clean,
 				t_state *state);
+
+// @-------------------------------------------- PROTOTYPES THREADS -----
+int			start_simulation(t_state *state);
+int			create_threads(t_state *state);
+void		*coder_thread_routine(void *arg);
+void		join_threads(t_state *state);
 
 #endif
