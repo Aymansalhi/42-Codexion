@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 00:30:56 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 10:49:14 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/11 19:27:50 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ void	join_threads(t_state *state)
 		}
 		i++;
 	}
+	if (pthread_join(state->monitor_thread, NULL))
+		clean_and_print_err(THREAD_JOIN_ERROR, NULL, 0, state);
 }
 
-int	creat_coder_threads(t_state *state)
+int	create_coder_threads(t_state *state)
 {
 	int	i;
 
@@ -45,9 +47,13 @@ int	creat_coder_threads(t_state *state)
 	return (EXIT_SUCCESS);
 }
 
+
 int	create_threads(t_state *state)
 {
-	if (creat_coder_threads(state) == EXIT_FAILURE)
+	if (pthread_create(&state->monitor_thread, NULL, monitor, state) != 0)
+		return (clean_and_print_err(THREAD_CREATION_ERROR, NULL, 1, state),
+			EXIT_FAILURE);
+	if (create_coder_threads(state) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
@@ -55,7 +61,7 @@ int	create_threads(t_state *state)
 int	start_simulation(t_state *state)
 {
 	if (create_threads(state) == EXIT_FAILURE)
-		return (EXIT_FAILURE);
+		return (join_threads(state), EXIT_FAILURE);
 	join_threads(state);
 	return (EXIT_SUCCESS);
 }
