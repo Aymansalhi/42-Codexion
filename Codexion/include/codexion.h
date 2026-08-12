@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 10:48:56 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/11 21:50:18 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define MUTEX_DONGEL_ERROR "Failed to initialize mutex for dongel."
 # define THREAD_CREATION_ERROR "Failed to create thread."
 # define THREAD_JOIN_ERROR "Failed to join thread."
+# define MUTEX_QUEUE_ERROR "Failed to initialize mutex for queue."
+# define COND_QUEUE_ERROR "Failed to initialize condition variable for queue."
 
 //@ -------------------------------------------- INCLUDS ------------
 # include <stdlib.h>
@@ -39,14 +41,17 @@ typedef struct s_coder		t_coder;
 typedef struct s_dongel		t_dongel;
 
 typedef struct s_queue		t_queue;
+typedef struct s_tmp		t_tmp;
 
 struct s_state
 {
+	int					simulation_running;
+	pthread_t			monitor_thread;
 	t_config			*cfg;
 	t_coder				*coders;
 	t_dongel			*dongels;
 	t_queue				*queue;
-	pthread_mutex_t		state_lock;
+	pthread_cond_t		coder_wait_cond;
 };
 
 struct s_config
@@ -75,19 +80,27 @@ struct s_coder
 	t_dongel		right_dongel;
 	t_dongel		left_dongel;
 	t_coder			*next;
+	t_state			*state;
 };
 
 struct s_queue
 {
-	t_coder	*head;
-	t_coder	*tail;
-	int		size;
+	t_coder			*head;
+	t_coder			*tail;
+	int				size;
+	pthread_mutex_t	lock;
+};
+
+struct s_tmp
+{
+	t_coder	*coder;
+	t_state	*state;
 };
 
 
 // @-------------------------------------------- PROTOTYPES ---------
 int			ft_parsing_args(int argc, char **argv, t_state *state);
-int			init_coders_and_dongles(t_state *state);
+int			init_and_setup_all(t_state *state);
 
 // @-------------------------------------------- PROTOTYPES UTILS -----
 int			ft_strict_int(const char *str, long *out);
@@ -102,10 +115,17 @@ void		clean_and_print_err(
 				int clean,
 				t_state *state);
 
-// @-------------------------------------------- PROTOTYPES THREADS -----
+// @-------------------------------------------- PROTOTYPES THREADS UTILS -----
 int			start_simulation(t_state *state);
 int			create_threads(t_state *state);
-void		*coder_thread_routine(void *arg);
 void		join_threads(t_state *state);
+
+// @-------------------------------------------- PROTOTYPES THREADS -----
+void		*coder_thread_routine(void *arg);
+void		*monitor(void *arg);
+
+// @-------------------------------------------- PROTOTYPES QUEUE -----
+void		push_to_queue(t_coder *coder);
+void		pop_from_queue(t_coder *coder);
 
 #endif
