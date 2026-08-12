@@ -1,287 +1,57 @@
-# Phase 2 Design Specification
+STEP 1 ✅
+Create coders + dongles
 
-## Objective
+        ↓
 
-Design the **data model** for the entire project.
+STEP 2 ← ✅
+Create coder threads
 
-At the end of this phase, you should have:
+        ↓
 
-* All project structures (`struct`s)
-* The relationships between them
-* Ownership clearly defined
-* No implementation
-* No thread logic
-* No scheduler logic
+STEP 3 ✅
+Create coder routine
 
-Think of this as designing the database of your application.
+        ↓
 
----
+STEP 4 ✅
+Create monitor thread
 
-# System Overview
+        ↓
 
-Your program consists of these major components:
+STEP 5
+Create request structure / FIFO queue
 
-```text
-                    Simulation
-                         │
-        ┌────────────────┼────────────────┐
-        │                │                │
-     Coders           Dongles          Logger
-        │                                 │
-        └──────────────┬──────────────────┘
-                       │
-                   Monitor
-```
+        ↓
 
-Everything belongs to the **Simulation**.
+STEP 6
+Coder submits request
 
----
+        ↓
 
-# Component 1 — Simulation
+STEP 7
+Scheduler decides who gets both dongles
 
-### Responsibility
+        ↓
 
-Own and manage the entire simulation.
+STEP 8
+Acquire BOTH atomically
 
-### Owns
+        ↓
 
-* Global configuration
-* Arrays of all coders
-* Arrays of all dongles
-* Global synchronization objects
-* Simulation state
-* Start time
-* Scheduler selection
+STEP 9
+Compile
 
-### Does NOT own
+        ↓
 
-* Individual coder state
-* Individual dongle state
+STEP 10
+Release BOTH
 
----
+        ↓
 
-# Component 2 — Coder
+STEP 11
+Cooldown / scheduling
 
-### Responsibility
+        ↓
 
-Represent one worker.
-
-### Owns
-
-* Identity
-* Thread handle
-* Current state
-* Progress
-* References to the two dongles it uses
-* Timing information related only to itself
-
-### Does NOT own
-
-* Global configuration
-* Scheduler
-* Logger
-* Other coders
-
-A coder should only know enough information to perform its own work.
-
----
-
-# Component 3 — Dongle
-
-### Responsibility
-
-Represent one shared resource.
-
-### Owns
-
-* Synchronization protecting itself
-* Availability
-* Cooldown information
-* Current owner (if any)
-* Waiting requests
-
-### Does NOT own
-
-* Compile statistics
-* Simulation configuration
-* Other dongles
-
-Each dongle is completely independent.
-
----
-
-# Component 4 — Logger
-
-### Responsibility
-
-Guarantee that only one message is printed at a time.
-
-### Owns
-
-* Output synchronization
-
-Nothing else.
-
----
-
-# Component 5 — Monitor
-
-### Responsibility
-
-Observe the simulation.
-
-### Has access to
-
-* Entire Simulation
-
-### Owns
-
-Almost nothing.
-
-The monitor is mostly behavior rather than data.
-
----
-
-# Ownership Rules
-
-When designing your structs, follow these rules.
-
-## Rule 1
-
-Every piece of data must have **one owner**.
-
-Example
-
-```text
-time_to_compile
-```
-
-Only one structure should own it.
-
----
-
-## Rule 2
-
-Never duplicate configuration.
-
-Bad
-
-```text
-Simulation
-    compile_time
-
-Coder1
-    compile_time
-
-Coder2
-    compile_time
-```
-
-Good
-
-```text
-Simulation
-
-compile_time
-```
-
-Everyone else reads it.
-
----
-
-## Rule 3
-
-A structure only stores information about itself.
-
-Example
-
-A dongle should never know
-
-```text
-number_of_coders
-```
-
-That belongs to Simulation.
-
----
-
-## Rule 4
-
-Prefer references over copies.
-
-If multiple objects need the same information,
-
-store it once
-
-and reference it.
-
----
-
-# Relationship Diagram
-
-Your final design should approximately satisfy this relationship.
-
-```text
-Simulation
-│
-├── owns → Coders[]
-│
-├── owns → Dongles[]
-│
-├── owns → Logger
-│
-└── owns → Configuration
-
-Coder
-│
-├── references → Simulation
-├── references → Left Dongle
-└── references → Right Dongle
-
-Dongle
-│
-└── references → Waiting Requests
-
-Monitor
-│
-└── references → Simulation
-```
-
-Notice the difference between **owns** and **references**.
-
----
-
-# Files to Design
-
-You should create the design (not implementation) for:
-
-```text
-include/
-    codexion.h
-
-src/
-```
-
-Inside your header, define all the structures needed for the project.
-
-No functions yet.
-
----
-
-# Deliverables
-
-When you're finished, send me:
-
-1. Your `codexion.h`
-
-   * All enums (if any)
-   * All structs
-   * All typedefs
-
-2. A short explanation answering:
-
-   * Why each struct exists
-   * Why each field belongs there
-   * Which structs own data and which only reference other objects
-
----
+STEP 12
+Full simulation
