@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 10:44:48 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/11 21:50:26 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int	init_coders(t_state *state)
 			state->coders[i].left_dongel = state->dongels[i];
 			tmp_wrapper = (i + 1) % state->cfg->number_of_coders;
 			state->coders[i].right_dongel = state->dongels[tmp_wrapper];
+			state->coders[i].state = state;
 			i++;
 		}
 	}
@@ -68,12 +69,24 @@ int	init_coders(t_state *state)
 	return (EXIT_SUCCESS);
 }
 
-int	init_coders_and_dongles(t_state *state)
+int	init_mutexes_and_cond(t_state *state)
+{
+	if (pthread_mutex_init(&state->queue->lock, NULL) != 0)
+		return (clean_and_print_err(MUTEX_QUEUE_ERROR, NULL, 1, state),
+			EXIT_FAILURE);
+	if (pthread_cond_init(&state->coder_wait_cond, NULL) != 0)
+		return (clean_and_print_err(COND_QUEUE_ERROR, NULL, 1, state),
+			EXIT_FAILURE);
+	return (EXIT_SUCCESS);
+}
+
+int	init_and_setup_all(t_state *state)
 {
 	if (create_coders_and_dongles(state) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
-
 	if (init_dongles(state) || init_coders(state))
+		return (EXIT_FAILURE);
+	if (init_mutexes_and_cond(state) == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
