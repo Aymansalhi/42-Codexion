@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 21:50:18 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/13 12:16:47 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ struct s_state
 	t_dongel			*dongels;
 	t_queue				*queue;
 	pthread_cond_t		coder_wait_cond;
+	int					dongels_initialized;
 };
 
 struct s_config
@@ -70,6 +71,7 @@ struct s_dongel
 {
 	int					id;
 	int					available;
+	int					cooldown;
 	pthread_mutex_t		lock;
 };
 
@@ -77,8 +79,8 @@ struct s_coder
 {
 	int				id;
 	pthread_t		thread;
-	t_dongel		right_dongel;
-	t_dongel		left_dongel;
+	t_dongel		*right_dongel;
+	t_dongel		*left_dongel;
 	t_coder			*next;
 	t_state			*state;
 };
