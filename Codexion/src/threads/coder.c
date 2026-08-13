@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 22:33:41 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 21:51:28 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/13 12:24:08 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	request_compile(t_coder *coder)
 {
+	printf("Coder %d is pushed to the queue waiting to compile.\n", coder->id);
 	push_to_queue(coder);
 }
 
@@ -25,20 +26,27 @@ void	wait_until_scheduler_allows_me(t_coder *coder)
 	pthread_mutex_lock(&queue->lock);
 	while (queue->head != coder)
 	{
+		printf("Coder %d is waiting for its turn to compile.\n", coder->id);
 		pthread_cond_wait(
 			&coder->state->coder_wait_cond, &queue->lock);
 	}
 	printf("Coder %d is allowed to compile now.\n", coder->id);
-	pop_from_queue(coder);
-	pthread_cond_brodcast(&coder->state->coder_wait_cond);
+	pop_from_queue(coder); //@ TODO: move this to after coder finishes compiling, but for now it's here to avoid deadlock
+	pthread_cond_broadcast(&coder->state->coder_wait_cond);
 	pthread_mutex_unlock(&queue->lock);
 }
 
+// @TODO 2: implement Dongle cooldown is mandatory also
+void	take_dongels(t_coder *coder)
+{
+	coder->left_dongel->available = 0;
+	coder->right_dongel->available = 0;
+	pri
+}
 
 void	*coder_thread_routine(void *arg)
 {
 	t_coder		*coder;
-	t_state		*state;
 
 	coder = (t_coder *)arg;
 
@@ -49,7 +57,7 @@ void	*coder_thread_routine(void *arg)
 
 	// coder's life
 
-	// take dongels
+	take_dongels(coder);
 	// compile
 	// wait
 	// debug
@@ -57,15 +65,11 @@ void	*coder_thread_routine(void *arg)
 	// etc.
 	// usleep(5000000); //* sleep for 5 seconds to simulate work
 	printf("Coder %d is starting its routine.\n", coder->id);
-	usleep(3000000); //* sleep for 5 seconds to simulate work
+	usleep(5000000); //* sleep for 5 seconds to simulate work
 
 
 	return (NULL);
 }
 
-// @TODO: 1  i think befor start coding this i v counted a probleme how to know that im the coder to take the dongels so what ill do i ll start implemeint the fifo algo to start good
-// @TODO: 2 go sreach how to know that im the self coder that scheduler choose me is he pass the acctual info struct as parameter ??
-
-
-
-// @TODO: 3 i need to test all of this shit now what i did then continue in line 45 and 46 two func
+// @TODO 1: kepp continueing implementing the coder_thread_routine u can check the check list to continue
+// @TODO 1-0: so manly i need to implement the dongd etc. i will do it in the next commitsel taking and releasing and the compiling and debugging and refactoring an
