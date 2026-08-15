@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 00:30:56 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 19:27:50 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/13 13:12:13 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int	create_threads(t_state *state)
 
 int	start_simulation(t_state *state)
 {
+	state->start_time = get_time_in_ms();
 	if (create_threads(state) == EXIT_FAILURE)
 		return (join_threads(state), EXIT_FAILURE);
 	join_threads(state);
