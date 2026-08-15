@@ -2,7 +2,7 @@ NAME := codexion
 
 SRC := src/main.c src/parsing.c utils/parsing_utils.c src/exit_clean.c \
 		src/initialization/init.c src/threads/create_thread.c src/threads/coder.c \
-		src/threads/monitor.c utils/queue.c
+		src/threads/monitor.c utils/queue.c utils/time_utils.c
 
 OBJ := $(SRC:.c=.o)
 
