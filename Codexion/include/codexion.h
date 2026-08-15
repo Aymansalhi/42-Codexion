@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/13 12:16:47 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/14 01:04:50 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@
 # include <limits.h>
 # include <pthread.h>
 # include <unistd.h>
+# include <sys/time.h>
+
 
 //@ -------------------------------------------- STRUCTERS ---------
 typedef struct s_state		t_state;
@@ -53,6 +55,7 @@ struct s_state
 	t_queue				*queue;
 	pthread_cond_t		coder_wait_cond;
 	int					dongels_initialized;
+	long long			start_time;
 };
 
 struct s_config
@@ -83,6 +86,11 @@ struct s_coder
 	t_dongel		*left_dongel;
 	t_coder			*next;
 	t_state			*state;
+
+	pthread_mutex_t	mutex_burnout;
+	long long		time_bournout;
+	int				compiles_done;
+	int				is_finished;
 };
 
 struct s_queue
@@ -129,5 +137,8 @@ void		*monitor(void *arg);
 // @-------------------------------------------- PROTOTYPES QUEUE -----
 void		push_to_queue(t_coder *coder);
 void		pop_from_queue(t_coder *coder);
+
+// @-------------------------------------------- PROTOTYPES TIME -----
+long long	get_time_in_ms(void);
 
 #endif
