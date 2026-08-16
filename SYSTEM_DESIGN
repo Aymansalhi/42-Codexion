@@ -18,17 +18,17 @@ Create monitor thread
 
         ↓
 
-STEP 5
+STEP 5 ✅
 Create request structure / FIFO queue
 
         ↓
 
-STEP 6
+STEP 6 ✅
 Coder submits request
 
         ↓
 
-STEP 7
+STEP 7 
 Scheduler decides who gets both dongles
 
         ↓
