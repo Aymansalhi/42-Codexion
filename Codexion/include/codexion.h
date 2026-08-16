@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/14 01:04:50 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/15 16:04:49 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ struct s_state
 
 struct s_config
 {
-	int				number_of_coders;
-	int				time_to_burnout;
-	int				time_to_compile;
+	int				number_of_coders; //? DONE
+	int				time_to_burnout; //? DONE
+	int				time_to_compile; //? DONE
 	int				time_to_debug;
 	int				time_to_refactor;
 	int				number_of_compiles_required;
@@ -88,7 +88,7 @@ struct s_coder
 	t_state			*state;
 
 	pthread_mutex_t	mutex_burnout;
-	long long		time_bournout;
+	long long		time_burnout;
 	int				compiles_done;
 	int				is_finished;
 };
@@ -140,5 +140,9 @@ void		pop_from_queue(t_coder *coder);
 
 // @-------------------------------------------- PROTOTYPES TIME -----
 long long	get_time_in_ms(void);
+
+// @-------------------------------------------- PROTOTYPES MUTEX -----
+void		set_burnout(t_coder *coder);
+
 
 #endif
