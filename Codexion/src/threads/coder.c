@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 22:33:41 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/14 01:06:22 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/15 16:24:30 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void	wait_until_scheduler_allows_me(t_coder *coder)
 			&coder->state->coder_wait_cond, &queue->lock);
 	}
 	printf("Coder %d is allowed to compile now.\n", coder->id);
-	pop_from_queue(coder); //@ TODO: move this to after coder releases dongels, but for now it's here to avoid deadlock
 	pthread_cond_broadcast(&coder->state->coder_wait_cond);
 	pthread_mutex_unlock(&queue->lock);
 }
@@ -54,6 +53,21 @@ void	take_dongels(t_coder *coder)
 	printf("%lld %d has taken a dongle\n", time_passed, coder->id);
 }
 
+void	release_dongles(t_coder *coder)
+{
+	long long	time_passed;
+
+	time_passed = get_time_in_ms() - coder->state->start_time;
+	coder->left_dongel->available = 1;
+	printf("%lld %d has released a dongle\n", time_passed, coder->id);
+	coder->right_dongel->available = 1;
+	printf("%lld %d has released a dongle\n", time_passed, coder->id);
+	// @TODO 2: implement Dongle cooldown is mandatory also
+	coder->left_dongel->cooldown = get_time_in_ms();
+	coder->right_dongel->cooldown = get_time_in_ms();
+	pop_from_queue(coder); //@ i just add it here
+}
+
 void	compile(t_coder *coder)
 {
 	set_burnout(coder);
@@ -68,8 +82,7 @@ void	compile(t_coder *coder)
 			get_time_in_ms() - coder->state->start_time, coder->id);
 		coder->is_finished = 1;
 	}
-	release_dongles(coder); //@ implement this function in the next commit
-	// @TODO 3: implement the compile time and the burnout time check and add 1 to compiles_done
+	// @TODO 3: implement the burnout time check in simulation monitor thread
 }
 
 void	*coder_thread_routine(void *arg)
@@ -84,14 +97,13 @@ void	*coder_thread_routine(void *arg)
 	// coder's life
 	take_dongels(coder);
 	compile(coder);
-	// wait
-	// release dongels
-	// debug
+	release_dongles(coder);
+	// debug(coder);
 	// refactor
 	// etc.
 	// usleep(5000000); //* sleep for 5 seconds to simulate work
-	printf("Coder %d is starting its routine.\n", coder->id);
-	usleep(5000000); //* sleep for 5 seconds to simulate work
+	printf("Coder %d is Ending its routine.\n", coder->id);
+	// usleep(5000000); //* sleep for 5 seconds to simulate work
 
 
 	return (NULL);
@@ -99,3 +111,6 @@ void	*coder_thread_routine(void *arg)
 
 // @TODO 1: kepp continueing implementing the coder_thread_routine u can check the check list to continue
 // @TODO 1-0: so manly i need to implement the dongd etc. i will do it in the next commitsel taking and releasing and the compiling and debugging and refactoring an
+
+
+// @URGENT: @TODO: check the freez bug its on the chat copilot
