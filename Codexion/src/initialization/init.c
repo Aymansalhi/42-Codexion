@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/13 12:17:10 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/17 21:04:51 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	init_dongles(t_state *state)
 	{
 		state->dongels[i].id = i;
 		state->dongels[i].available = 1;
-		state->dongels[i].cooldown = 0;
+		state->dongels[i].cooldown = state->cfg->dongle_cooldown;
 		if (pthread_mutex_init(&state->dongels[i].lock, NULL) != 0)
 		{
 			state->dongels_initialized = i;
