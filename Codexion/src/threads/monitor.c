@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 10:55:46 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 11:37:31 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/16 14:25:58 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	*monitor(void *arg)
 		i = 0;
 		while (i < state->cfg->number_of_coders)
 		{
-			printf("monitor: coder %d is working\n", state->coders[i].id);
+			// printf("monitor: coder %d is working\n", state->coders[i].id);
 			i++;
 		}
 		usleep(100000);
