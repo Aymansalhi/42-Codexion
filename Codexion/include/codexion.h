@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/15 16:04:49 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/18 12:41:44 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ struct s_dongel
 {
 	int					id;
 	int					available;
-	int					cooldown;
+	long long			last_released_ms;
 	pthread_mutex_t		lock;
 };
 
@@ -142,7 +142,20 @@ void		pop_from_queue(t_coder *coder);
 long long	get_time_in_ms(void);
 
 // @-------------------------------------------- PROTOTYPES MUTEX -----
+void		init_coder_fields(
+				t_coder *coder,
+				int id,
+				t_dongel *left,
+				t_dongel *right);
 void		set_burnout(t_coder *coder);
+void		lock_dongles_in_order(t_coder *coder);
+void		unlock_dongles_in_order(t_coder *coder);
+
+// @----------------------------------- PROTOTYPES CODER ROUTINE TASKS -----
+void		take_dongels(t_coder *coder);
+void		release_dongles(t_coder *coder);
+void		request_compile(t_coder *coder);
+void		wait_until_scheduler_allows_me(t_coder *coder);
 
 
 #endif
