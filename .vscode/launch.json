@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/home/mirr/Desktop/42-curses/42-Codexion/Codexion/codexion",
-            "args": ["4", "100", "100", "100", "100", "5", "50", "fifo"],
+            "args": ["3", "1", "3000", "1", "1", "2", "3000", "fifo"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
