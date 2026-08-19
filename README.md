@@ -1,5 +1,7 @@
 # 42-Codexion
 
+Codexion is a systems-level C project focused on concurrent resource management, where independent coder threads compete for shared dongles under FIFO/EDF scheduling. It tackles deadlock prevention, synchronization, starvation, resource arbitration, and precise timeout detection using POSIX threading primitives.
+
 change mirr form headred 42 to molahrac
 
 ## thread lifecycle
