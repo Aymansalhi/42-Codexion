@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 00:30:56 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/13 13:12:13 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/19 01:21:05 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	create_coder_threads(t_state *state)
 	return (EXIT_SUCCESS);
 }
 
-
 int	create_threads(t_state *state)
 {
 	if (pthread_create(&state->monitor_thread, NULL, monitor, state) != 0)
@@ -58,9 +57,22 @@ int	create_threads(t_state *state)
 	return (EXIT_SUCCESS);
 }
 
+static void	set_start_time_burnout(t_state *state)
+{
+	int	i;
+
+	state->start_time = get_time_in_ms();
+	i = 0;
+	while (i < state->cfg->number_of_coders)
+	{
+		state->coders[i].last_compile_start = state->start_time;
+		i++;
+	}
+}
+
 int	start_simulation(t_state *state)
 {
-	state->start_time = get_time_in_ms();
+	set_start_time_burnout(state);
 	if (create_threads(state) == EXIT_FAILURE)
 		return (join_threads(state), EXIT_FAILURE);
 	join_threads(state);
