@@ -7,8 +7,8 @@
 - [-] Each dongle has its own mutex
 - [-] Shared resources are protected against races
 - [-] Coders cannot duplicate the same dongle
-- [ ] Dongle cooldown is enforced after release
-- [ ] Fair arbitration is implemented
+- [-] Dongle cooldown is enforced after release
+- [-] Fair arbitration is implemented
 - [-] FIFO policy is based on request arrival order
 - [ ] EDF policy uses earliest deadline
 - [ ] Tie-break rule exists for EDF determinism
