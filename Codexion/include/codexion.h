@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/18 12:41:44 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/19 01:41:05 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ struct s_coder
 	t_state			*state;
 
 	pthread_mutex_t	mutex_burnout;
-	long long		time_burnout;
+	long long		last_compile_start;
 	int				compiles_done;
 	int				is_finished;
 };
@@ -154,7 +154,6 @@ void		unlock_dongles_in_order(t_coder *coder);
 // @----------------------------------- PROTOTYPES CODER ROUTINE TASKS -----
 void		take_dongels(t_coder *coder);
 void		release_dongles(t_coder *coder);
-void		request_compile(t_coder *coder);
 void		wait_until_scheduler_allows_me(t_coder *coder);
 
 
