@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/17 21:04:51 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/19 01:06:08 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	init_dongles(t_state *state)
 	{
 		state->dongels[i].id = i;
 		state->dongels[i].available = 1;
-		state->dongels[i].cooldown = state->cfg->dongle_cooldown;
+		state->dongels[i].last_released_ms = -1;
 		if (pthread_mutex_init(&state->dongels[i].lock, NULL) != 0)
 		{
 			state->dongels_initialized = i;
@@ -64,20 +64,20 @@ int	init_coders(t_state *state)
 	{
 		while (i < state->cfg->number_of_coders)
 		{
-			state->coders[i].id = i;
-			state->coders[i].left_dongel = &state->dongels[i];
 			tmp_wrapper = (i + 1) % state->cfg->number_of_coders;
-			state->coders[i].right_dongel = &state->dongels[tmp_wrapper];
+			init_coder_fields(&state->coders[i], i,
+				&state->dongels[i], &state->dongels[tmp_wrapper]);
 			state->coders[i].state = state;
+			pthread_mutex_init(&state->coders[i].mutex_burnout, NULL);
 			i++;
 		}
 	}
 	else if (state->cfg->number_of_coders == 1)
 	{
-		state->coders[0].id = 0;
-		state->coders[0].left_dongel = &state->dongels[0];
-		state->coders[0].right_dongel = &state->dongels[0];
+		init_coder_fields(&state->coders[0], 0, &state->dongels[0],
+			&state->dongels[0]);
 		state->coders[0].state = state;
+		pthread_mutex_init(&state->coders[0].mutex_burnout, NULL);
 	}
 	return (EXIT_SUCCESS);
 }
