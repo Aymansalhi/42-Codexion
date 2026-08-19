@@ -32,7 +32,18 @@ void	clean_and_destroy_mutexes(t_state *state)
 
 void	clean_memory(t_state *state)
 {
+	int		i;
+
 	pthread_cond_destroy(&state->coder_wait_cond);
+	if (state->coders && state->cfg)
+	{
+		i = 0;
+		while (i < state->cfg->number_of_coders)
+		{
+			pthread_mutex_destroy(&state->coders[i].mutex_burnout);
+			i++;
+		}
+	}
 	clean_and_destroy_mutexes(state);
 	if (state->coders)
 		free(state->coders);
