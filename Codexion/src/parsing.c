@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:22:02 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/10 00:58:54 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/19 13:30:36 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_process_numeric_arg(t_config *configs, char *arg, int i)
 	if (!ft_validate_field(val, i))
 		return (EXIT_FAILURE);
 	ft_set_config_value(configs, val, i);
-	return (1);
+	return (EXIT_SUCCESS);
 }
 
 int	ft_validate_scheduler(const char *scheduler)
@@ -54,7 +54,7 @@ int	ft_parsing_args(int argc, char **argv, t_state *state)
 	i = 1;
 	while (i <= 7)
 	{
-		if (!ft_process_numeric_arg(state->cfg, argv[i], i))
+		if (ft_process_numeric_arg(state->cfg, argv[i], i))
 			return (clean_and_print_err(INVALID_ARG, argv[i], 1, state),
 				EXIT_FAILURE);
 		i++;
