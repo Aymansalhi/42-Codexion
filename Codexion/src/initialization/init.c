@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/19 01:06:08 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 02:51:47 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	create_coders_and_dongles_and_queue(t_state *state)
 	if (!state->dongels)
 		return (clean_and_print_err(MALLOC_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
-	state->queue = malloc(sizeof(t_queue));
+	state->queue = malloc(sizeof(t_fifo_queue));
 	if (!state->queue)
 		return (clean_and_print_err(MALLOC_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
@@ -90,6 +90,9 @@ int	init_mutexes_and_cond(t_state *state)
 	if (pthread_cond_init(&state->coder_wait_cond, NULL) != 0)
 		return (clean_and_print_err(COND_QUEUE_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
+	if (pthread_mutex_init(&state->print_lock, NULL) != 0)
+		return (clean_and_print_err("Failed to init print mutex",
+				NULL, 1, state), EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
