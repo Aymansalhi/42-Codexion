@@ -12,15 +12,15 @@
 - [-] FIFO policy is based on request arrival order
 - [ ] EDF policy uses earliest deadline
 - [ ] Tie-break rule exists for EDF determinism
-- [ ] No coder starves under valid feasible conditions
-- [ ] Simulation stops on burnout or after compile target is reached
+- [-] No coder starves under valid feasible conditions
+- [-] Simulation stops on burnout or after compile target is reached
 
 ## Monitor and burnout
-- [ ] Separate monitor thread exists
-- [ ] Monitor detects burnout precisely
+- [-] Separate monitor thread exists
+- [-] Monitor detects burnout precisely
 - [ ] Burnout log is emitted within 10 ms of actual burnout
-- [ ] Simulation is stopped when burnout occurs
-- [ ] Simulation state is checked safely under mutex protection
+- [-] Simulation is stopped when burnout occurs
+- [-] Simulation state is checked safely under mutex protection
 
 ## Logging
 - [ ] Logs are serialized with a mutex
