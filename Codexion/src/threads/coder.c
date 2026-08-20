@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 22:33:41 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/19 01:40:58 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/19 14:08:21 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,39 @@
 
 void	request_compile(t_coder *coder)
 {
-	printf("Coder %d is pushed to the queue waiting to compile.\n", coder->id);
 	push_to_queue(coder);
 }
 
 void	compile(t_coder *coder)
 {
 	set_burnout(coder);
-	printf("%lld Coder %d is compiling for %d ms.\n",
-		get_time_in_ms() - coder->state->start_time, coder->id,
-		coder->state->cfg->time_to_compile);
+	pthread_mutex_lock(&coder->state->print_lock);
+	printf("%lld %d is compiling\n",
+		get_time_in_ms() - coder->state->start_time, coder->id + 1);
+	pthread_mutex_unlock(&coder->state->print_lock);
 	usleep(coder->state->cfg->time_to_compile * 1000);
 	coder->compiles_done++;
 	if (coder->compiles_done >= coder->state->cfg->number_of_compiles_required)
 	{
-		printf("%lld Coder %d finished compiling the required number of times\
-			.\n", get_time_in_ms() - coder->state->start_time, coder->id);
 		coder->is_finished = 1;
 	}
 }
 
 void	debug(t_coder *coder)
 {
-	printf("%lld Coder %d is debugging for %d ms.\n",
-		get_time_in_ms() - coder->state->start_time, coder->id,
-		coder->state->cfg->time_to_debug);
+	pthread_mutex_lock(&coder->state->print_lock);
+	printf("%lld %d is debugging\n",
+		get_time_in_ms() - coder->state->start_time, coder->id + 1);
+	pthread_mutex_unlock(&coder->state->print_lock);
 	usleep(coder->state->cfg->time_to_debug * 1000);
 }
 
 void	refactor(t_coder *coder)
 {
-	printf("%lld Coder %d is refactoring for %d ms.\n",
-		get_time_in_ms() - coder->state->start_time, coder->id,
-		coder->state->cfg->time_to_refactor);
+	pthread_mutex_lock(&coder->state->print_lock);
+	printf("%lld %d is refactoring\n",
+		get_time_in_ms() - coder->state->start_time, coder->id + 1);
+	pthread_mutex_unlock(&coder->state->print_lock);
 	usleep(coder->state->cfg->time_to_refactor * 1000);
 }
 
@@ -73,9 +73,6 @@ void	*coder_thread_routine(void *arg)
 		if (!coder->state->simulation_running)
 			break ;
 		refactor(coder);
-		printf("Coder %d is Ending its routine.\n", coder->id);
-		printf("_____++++++Coder %d has done %d compiles.\n", coder->id, coder->compiles_done);
 	}
-	printf("Coder %d has finished its routine-----------------------------.\n", coder->id);
 	return (NULL);
 }
