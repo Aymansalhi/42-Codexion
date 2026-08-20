@@ -28,6 +28,7 @@ void	clean_and_destroy_mutexes(t_state *state)
 	}
 	if (state->queue)
 		pthread_mutex_destroy(&state->queue->lock);
+	pthread_mutex_destroy(&state->print_lock);
 }
 
 void	clean_memory(t_state *state)
