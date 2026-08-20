@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/16 20:15:58 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/18 13:26:22 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/19 14:11:57 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	main(int argc, char **argv)
 
 	state.simulation_running = 0;
 	clean_memory(&state);
-	printf("All memory cleaned successfully. Exiting program.\n");
 	return (EXIT_SUCCESS);
 }
+
+// @TODO : implement EDF scheduler
