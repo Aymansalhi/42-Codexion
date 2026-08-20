@@ -41,8 +41,10 @@ void	*monitor(void *arg)
 		{
 			if (coder_burned_out(state, &state->coders[i], now))
 			{
+				pthread_mutex_lock(&state->print_lock);
 				printf("%lld %d burned out\n", now - state->start_time,
-					state->coders[i].id);
+					state->coders[i].id + 1);
+				pthread_mutex_unlock(&state->print_lock);
 				state->simulation_running = 0;
 				pthread_cond_broadcast(&state->coder_wait_cond);
 				return (NULL);
