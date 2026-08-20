@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/19 01:41:05 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 02:52:26 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,14 @@
 # include <unistd.h>
 # include <sys/time.h>
 
-
 //@ -------------------------------------------- STRUCTERS ---------
 typedef struct s_state		t_state;
 typedef struct s_config		t_config;
 typedef struct s_coder		t_coder;
 typedef struct s_dongel		t_dongel;
 
-typedef struct s_queue		t_queue;
-typedef struct s_tmp		t_tmp;
+typedef struct s_fifo_queue	t_fifo_queue;
+typedef struct s_edf_queue	t_edf_queue;
 
 struct s_state
 {
@@ -52,17 +51,18 @@ struct s_state
 	t_config			*cfg;
 	t_coder				*coders;
 	t_dongel			*dongels;
-	t_queue				*queue;
+	t_fifo_queue				*queue;
 	pthread_cond_t		coder_wait_cond;
 	int					dongels_initialized;
 	long long			start_time;
+	pthread_mutex_t		print_lock;
 };
 
 struct s_config
 {
-	int				number_of_coders; //? DONE
-	int				time_to_burnout; //? DONE
-	int				time_to_compile; //? DONE
+	int				number_of_coders;
+	int				time_to_burnout;
+	int				time_to_compile;
 	int				time_to_debug;
 	int				time_to_refactor;
 	int				number_of_compiles_required;
@@ -93,7 +93,7 @@ struct s_coder
 	int				is_finished;
 };
 
-struct s_queue
+struct s_fifo_queue
 {
 	t_coder			*head;
 	t_coder			*tail;
@@ -101,12 +101,9 @@ struct s_queue
 	pthread_mutex_t	lock;
 };
 
-struct s_tmp
+struct s_edf_queue
 {
-	t_coder	*coder;
-	t_state	*state;
 };
-
 
 // @-------------------------------------------- PROTOTYPES ---------
 int			ft_parsing_args(int argc, char **argv, t_state *state);
@@ -155,6 +152,5 @@ void		unlock_dongles_in_order(t_coder *coder);
 void		take_dongels(t_coder *coder);
 void		release_dongles(t_coder *coder);
 void		wait_until_scheduler_allows_me(t_coder *coder);
-
 
 #endif
