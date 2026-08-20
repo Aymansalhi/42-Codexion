@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/11 19:16:54 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/11 21:48:06 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 02:51:47 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	push_to_queue(t_coder *coder)
 {
-	t_queue	*queue;
+	t_fifo_queue	*queue;
 
 	queue = coder->state->queue;
 	pthread_mutex_lock(&coder->state->queue->lock);
@@ -35,7 +35,7 @@ void	push_to_queue(t_coder *coder)
 
 void	pop_from_queue(t_coder *coder)
 {
-	t_queue	*queue;
+	t_fifo_queue	*queue;
 
 	queue = coder->state->queue;
 	if (queue->size == 0)
