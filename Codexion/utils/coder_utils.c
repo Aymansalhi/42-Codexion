@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 00:21:13 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/19 01:40:52 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 02:51:47 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,12 @@ void	unlock_dongles_in_order(t_coder *coder)
 
 void	wait_until_scheduler_allows_me(t_coder *coder)
 {
-	t_queue	*queue;
+	t_fifo_queue	*queue;
 
 	queue = coder->state->queue;
 	pthread_mutex_lock(&queue->lock);
 	while (coder->state->simulation_running && queue->head != coder)
 	{
-		printf("Coder %d is (FREEZED) until it get UNFREEZED.\n", coder->id);
 		pthread_cond_wait(
 			&coder->state->coder_wait_cond, &queue->lock);
 	}
@@ -79,6 +78,5 @@ void	wait_until_scheduler_allows_me(t_coder *coder)
 		pthread_mutex_unlock(&queue->lock);
 		return ;
 	}
-	printf("Coder %d is allowed to compile now.\n", coder->id);
 	pthread_mutex_unlock(&queue->lock);
 }
