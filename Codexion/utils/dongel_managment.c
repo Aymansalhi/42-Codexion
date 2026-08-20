@@ -42,33 +42,32 @@ void	take_dongels(t_coder *coder)
 	}
 	if (!coder->state->simulation_running)
 		return ;
-	time_passed = get_time_in_ms() - coder->state->start_time;
+
 	coder->left_dongel->available = 0;
-	printf("%lld coder %d has taken a dongle\n", time_passed, coder->id);
+	pthread_mutex_lock(&coder->state->print_lock);
+	time_passed = get_time_in_ms() - coder->state->start_time;
+	printf("%lld %d has taken a dongle\n", time_passed, coder->id + 1);
 	if (coder->left_dongel != coder->right_dongel)
 	{
 		coder->right_dongel->available = 0;
-		printf("%lld coder %d has taken a dongle\n", time_passed, coder->id);
+		time_passed = get_time_in_ms() - coder->state->start_time;
+		printf("%lld %d has taken a dongle\n", time_passed, coder->id + 1);
 	}
+	pthread_mutex_unlock(&coder->state->print_lock);
 	unlock_dongles_in_order(coder);
 }
 
 void	release_dongles(t_coder *coder)
 {
-	long long	time_passed;
-
 	if (!coder->state->simulation_running)
 		return ;
 	lock_dongles_in_order(coder);
-	time_passed = get_time_in_ms() - coder->state->start_time;
 	coder->left_dongel->available = 1;
 	coder->left_dongel->last_released_ms = get_time_in_ms();
-	printf("%lld %d has released a dongle\n", time_passed, coder->id);
 	if (coder->left_dongel != coder->right_dongel)
 	{
 		coder->right_dongel->available = 1;
 		coder->right_dongel->last_released_ms = get_time_in_ms();
-		printf("%lld %d has released a dongle\n", time_passed, coder->id);
 	}
 	unlock_dongles_in_order(coder);
 	pop_from_queue(coder);
