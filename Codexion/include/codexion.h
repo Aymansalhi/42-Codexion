@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 02:52:26 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 03:25:15 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # define CODEXION_H
 # define EXIT_FAILURE 1
 # define EXIT_SUCCESS 0
+# define SCHEDULER_FIFO "fifo"
+# define SCHEDULER_EDF "edf"
 # define MALLOC_ERROR "Memory allocation failed."
 # define INVALID_ARG "Invalid argument."
 # define INVALD_ARGS "Invalid number of arguments."
@@ -43,6 +45,7 @@ typedef struct s_dongel		t_dongel;
 
 typedef struct s_fifo_queue	t_fifo_queue;
 typedef struct s_edf_queue	t_edf_queue;
+typedef struct s_edf_node	t_edf_node;
 
 struct s_state
 {
@@ -51,7 +54,8 @@ struct s_state
 	t_config			*cfg;
 	t_coder				*coders;
 	t_dongel			*dongels;
-	t_fifo_queue				*queue;
+	t_fifo_queue		*fifo_queue;
+	t_edf_queue			*edf_queue;
 	pthread_cond_t		coder_wait_cond;
 	int					dongels_initialized;
 	long long			start_time;
@@ -103,6 +107,17 @@ struct s_fifo_queue
 
 struct s_edf_queue
 {
+	t_edf_node			*head;
+	t_edf_node			*tail;
+	int					size;
+	pthread_mutex_t		lock;
+};
+
+struct s_edf_node
+{
+	t_coder				*coder;
+	t_edf_node			*prev;
+	t_edf_node			*next;
 };
 
 // @-------------------------------------------- PROTOTYPES ---------
@@ -132,6 +147,7 @@ void		*coder_thread_routine(void *arg);
 void		*monitor(void *arg);
 
 // @-------------------------------------------- PROTOTYPES QUEUE -----
+int			init_fifo_queue(t_state *state);
 void		push_to_queue(t_coder *coder);
 void		pop_from_queue(t_coder *coder);
 
