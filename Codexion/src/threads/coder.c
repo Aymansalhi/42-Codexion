@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 22:33:41 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/19 14:08:21 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 03:39:58 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 void	request_compile(t_coder *coder)
 {
-	push_to_queue(coder);
+	if (coder->state->cfg->scheduler == SCHEDULER_EDF)
+		push_to_edf_queue(coder);
+	else
+		push_to_queue(coder);
 }
 
 void	compile(t_coder *coder)
