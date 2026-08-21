@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 00:21:13 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 02:51:47 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 03:14:14 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	wait_until_scheduler_allows_me(t_coder *coder)
 {
 	t_fifo_queue	*queue;
 
-	queue = coder->state->queue;
+	queue = coder->state->fifo_queue;
 	pthread_mutex_lock(&queue->lock);
 	while (coder->state->simulation_running && queue->head != coder)
 	{
