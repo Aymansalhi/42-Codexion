@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 02:51:47 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/20 03:25:56 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,16 @@ int	create_coders_and_dongles_and_queue(t_state *state)
 	if (!state->dongels)
 		return (clean_and_print_err(MALLOC_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
-	state->queue = malloc(sizeof(t_fifo_queue));
-	if (!state->queue)
-		return (clean_and_print_err(MALLOC_ERROR, NULL, 1, state),
-			EXIT_FAILURE);
-	state->queue->head = NULL;
-	state->queue->tail = NULL;
-	state->queue->size = 0;
+	if (state->cfg->scheduler == SCHEDULER_FIFO)
+	{
+		if (init_fifo_queue(state) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+	}
+	else if (state->cfg->scheduler == SCHEDULER_EDF)
+	{
+		if (init_edf_queue(state) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 }
 
@@ -84,7 +87,7 @@ int	init_coders(t_state *state)
 
 int	init_mutexes_and_cond(t_state *state)
 {
-	if (pthread_mutex_init(&state->queue->lock, NULL) != 0)
+	if (pthread_mutex_init(&state->fifo_queue->lock, NULL) != 0)
 		return (clean_and_print_err(MUTEX_QUEUE_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
 	if (pthread_cond_init(&state->coder_wait_cond, NULL) != 0)
