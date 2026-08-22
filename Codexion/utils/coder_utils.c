@@ -6,7 +6,7 @@
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/14 00:21:13 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 03:14:14 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/21 10:54:10 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,6 @@ void	init_coder_fields(t_coder *coder, int id,
 	coder->is_finished = 0;
 	coder->compiles_done = 0;
 	coder->last_compile_start = 0;
-}
-
-void	set_burnout(t_coder *coder)
-{
-	pthread_mutex_lock(&coder->mutex_burnout);
-	coder->last_compile_start = get_time_in_ms();
-	pthread_mutex_unlock(&coder->mutex_burnout);
 }
 
 void	lock_dongles_in_order(t_coder *coder)
@@ -62,21 +55,27 @@ void	unlock_dongles_in_order(t_coder *coder)
 	pthread_mutex_unlock(&coder->right_dongel->lock);
 }
 
+void	continue_until_dongles_are_avaliable(t_coder *coder)
+{
+	int			ready;
+
+	while (coder->state->simulation_running)
+	{
+		lock_dongles_in_order(coder);
+		ready = dongel_ready(coder->left_dongel, coder->state)
+			&& dongel_ready(coder->right_dongel, coder->state);
+		if (ready)
+			break ;
+		unlock_dongles_in_order(coder);
+		usleep(1000);
+	}
+}
+
 void	wait_until_scheduler_allows_me(t_coder *coder)
 {
-	t_fifo_queue	*queue;
-
-	queue = coder->state->fifo_queue;
-	pthread_mutex_lock(&queue->lock);
-	while (coder->state->simulation_running && queue->head != coder)
-	{
-		pthread_cond_wait(
-			&coder->state->coder_wait_cond, &queue->lock);
-	}
-	if (!coder->state->simulation_running)
-	{
-		pthread_mutex_unlock(&queue->lock);
-		return ;
-	}
-	pthread_mutex_unlock(&queue->lock);
+	if (strcmp(coder->state->cfg->scheduler, SCHEDULER_EDF) == 0)
+		handle_edf_scheduler(coder);
+	else
+		handle_fifo_scheduler(coder);
+	continue_until_dongles_are_avaliable(coder);
 }
