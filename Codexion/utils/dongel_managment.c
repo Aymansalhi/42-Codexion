@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   coder_routine_tasks.c                              :+:      :+:    :+:   */
+/*   dongel_managment.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/13 13:28:24 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/18 11:45:56 by mirr             ###   ########.fr       */
+/*   Updated: 2026/08/21 22:01:27 by mirr             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
 
-static int	dongel_ready(t_dongel *dongel, t_state *state)
+int	dongel_ready(t_dongel *dongel, t_state *state)
 {
 	long long	now;
 
@@ -28,18 +28,7 @@ static int	dongel_ready(t_dongel *dongel, t_state *state)
 void	take_dongels(t_coder *coder)
 {
 	long long	time_passed;
-	int			ready;
 
-	while (coder->state->simulation_running)
-	{
-		lock_dongles_in_order(coder);
-		ready = dongel_ready(coder->left_dongel, coder->state)
-			&& dongel_ready(coder->right_dongel, coder->state);
-		if (ready)
-			break ;
-		unlock_dongles_in_order(coder);
-		usleep(1000);
-	}
 	if (!coder->state->simulation_running)
 		return ;
 
@@ -70,6 +59,9 @@ void	release_dongles(t_coder *coder)
 		coder->right_dongel->last_released_ms = get_time_in_ms();
 	}
 	unlock_dongles_in_order(coder);
-	pop_from_queue(coder);
+	if (strcmp(coder->state->cfg->scheduler, SCHEDULER_EDF) == 0)
+		pop_from_edf_queue(coder);
+	else
+		pop_from_queue(coder);
 	pthread_cond_broadcast(&coder->state->coder_wait_cond);
 }
