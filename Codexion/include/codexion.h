@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/15 13:34:07 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 03:25:15 by mirr             ###   ########.fr       */
+/*   Created: 2026/07/15 13:34:07 by molahrac          #+#    #+#             */
+/*   Updated: 2026/08/22 13:32:30 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,18 @@
 # include <sys/time.h>
 
 //@ -------------------------------------------- STRUCTERS ---------
-typedef struct s_state		t_state;
-typedef struct s_config		t_config;
-typedef struct s_coder		t_coder;
-typedef struct s_dongel		t_dongel;
+typedef struct s_state			t_state;
+typedef struct s_config			t_config;
+typedef struct s_coder			t_coder;
+typedef struct s_dongel			t_dongel;
 
-typedef struct s_fifo_queue	t_fifo_queue;
-typedef struct s_edf_queue	t_edf_queue;
-typedef struct s_edf_node	t_edf_node;
+typedef struct s_priority_queue	t_priority_queue;
+
+typedef enum e_queue_mode
+{
+	QUEUE_FIFO,
+	QUEUE_EDF
+}	t_queue_mode;
 
 struct s_state
 {
@@ -54,8 +58,7 @@ struct s_state
 	t_config			*cfg;
 	t_coder				*coders;
 	t_dongel			*dongels;
-	t_fifo_queue		*fifo_queue;
-	t_edf_queue			*edf_queue;
+	t_priority_queue	*priority_queue;
 	pthread_cond_t		coder_wait_cond;
 	int					dongels_initialized;
 	long long			start_time;
@@ -84,40 +87,29 @@ struct s_dongel
 
 struct s_coder
 {
-	int				id;
-	pthread_t		thread;
-	t_dongel		*right_dongel;
-	t_dongel		*left_dongel;
-	t_coder			*next;
-	t_state			*state;
+	int					id;
+	pthread_t			thread;
+	t_dongel			*right_dongel;
+	t_dongel			*left_dongel;
+	t_coder				*next;
+	int					queue_index;
+	unsigned long long	queue_order;
+	t_state				*state;
 
-	pthread_mutex_t	mutex_burnout;
-	long long		last_compile_start;
-	int				compiles_done;
-	int				is_finished;
+	pthread_mutex_t		mutex_burnout;
+	long long			last_compile_start;
+	int					compiles_done;
+	int					is_finished;
 };
 
-struct s_fifo_queue
+struct s_priority_queue
 {
-	t_coder			*head;
-	t_coder			*tail;
-	int				size;
-	pthread_mutex_t	lock;
-};
-
-struct s_edf_queue
-{
-	t_edf_node			*head;
-	t_edf_node			*tail;
+	t_coder				**heap;
 	int					size;
+	int					capacity;
+	unsigned long long	next_order;
+	t_queue_mode		mode;
 	pthread_mutex_t		lock;
-};
-
-struct s_edf_node
-{
-	t_coder				*coder;
-	t_edf_node			*prev;
-	t_edf_node			*next;
 };
 
 // @-------------------------------------------- PROTOTYPES ---------
@@ -151,6 +143,15 @@ int			init_fifo_queue(t_state *state);
 void		push_to_queue(t_coder *coder);
 void		pop_from_queue(t_coder *coder);
 
+int			init_edf_queue(t_state *state);
+void		push_to_edf_queue(t_coder *coder);
+void		pop_from_edf_queue(t_coder *coder);
+t_coder		*peek_priority_queue(t_priority_queue *queue);
+int			init_priority_queue(t_state *state, t_queue_mode mode);
+void		push_to_priority_queue(t_priority_queue *queue, t_coder *coder);
+void		pop_coder_from_priority_queue(t_priority_queue *queue,
+				t_coder *coder);
+
 // @-------------------------------------------- PROTOTYPES TIME -----
 long long	get_time_in_ms(void);
 
@@ -164,9 +165,12 @@ void		set_burnout(t_coder *coder);
 void		lock_dongles_in_order(t_coder *coder);
 void		unlock_dongles_in_order(t_coder *coder);
 
-// @----------------------------------- PROTOTYPES CODER ROUTINE TASKS -----
+// @----------------------------------- PROTOTYPES CODER ROUTINE TASKS && utils 
 void		take_dongels(t_coder *coder);
 void		release_dongles(t_coder *coder);
 void		wait_until_scheduler_allows_me(t_coder *coder);
+void		handle_fifo_scheduler(t_coder *coder);
+void		handle_edf_scheduler(t_coder *coder);
+int			dongel_ready(t_dongel *dongel, t_state *state);
 
 #endif
