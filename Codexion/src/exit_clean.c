@@ -3,22 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   exit_clean.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/10 00:26:28 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 03:47:44 by mirr             ###   ########.fr       */
+/*   Created: 2026/08/10 00:26:28 by molahrac          #+#    #+#             */
+/*   Updated: 2026/08/22 02:05:50 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
-
 
 void	clean_and_destroy_mutexes(t_state *state)
 {
 	int		i;
 
 	i = 0;
-
 	if (state->coders && state->cfg)
 	{
 		i = 0;
@@ -37,29 +35,20 @@ void	clean_and_destroy_mutexes(t_state *state)
 			i++;
 		}
 	}
-	if (state->fifo_queue)
-		pthread_mutex_destroy(&state->fifo_queue->lock);
+	if (state->priority_queue)
+		pthread_mutex_destroy(&state->priority_queue->lock);
 	pthread_mutex_destroy(&state->print_lock);
 }
 
-void	clean_edf_queue(t_state *state)
+void	clean_priority_queue(t_state *state)
 {
-	t_edf_node	*current;
-	t_edf_node	*next;
-
-	if (!state->edf_queue)
+	if (!state->priority_queue)
 		return ;
-	current = state->edf_queue->head;
-	while (current)
-	{
-		next = current->next;
-		free(current);
-		current = next;
-	}
-	state->edf_queue->head = NULL;
-	state->edf_queue->tail = NULL;
-	state->edf_queue->size = 0;
-	free(state->edf_queue);
+	free(state->priority_queue->heap);
+	state->priority_queue->heap = NULL;
+	state->priority_queue->size = 0;
+	state->priority_queue->capacity = 0;
+	free(state->priority_queue);
 }
 
 void	clean_memory(t_state *state)
@@ -72,15 +61,12 @@ void	clean_memory(t_state *state)
 		free(state->dongels);
 	if (state->cfg)
 		free(state->cfg);
-	if (state->fifo_queue)
-		free(state->fifo_queue);
-	if (state->edf_queue)
-		clean_edf_queue(state);
+	if (state->priority_queue)
+		clean_priority_queue(state);
 	state->coders = NULL;
 	state->dongels = NULL;
 	state->cfg = NULL;
-	state->fifo_queue = NULL;
-	state->edf_queue = NULL;
+	state->priority_queue = NULL;
 }
 
 void	clean_and_print_err(char *err, char *details, int clean, t_state *state)
