@@ -1,13 +1,49 @@
-# 42-Codexion
+*This project has been created as part of the 42 curriculum by molahrac.*
 
+# Codexion
 ![CODEXION_BANNER](https://raw.githubusercontent.com/mirr-x/42-CC-1337/refs/heads/main/images/CODEXION_BANNER.png)
+
+## Description
 
 Codexion is a systems-level C project focused on concurrent resource management, where independent coder threads compete for shared dongles under FIFO/EDF scheduling. It tackles deadlock prevention, synchronization, starvation, resource arbitration, and precise timeout detection using POSIX threading primitives.
 
-change mirr form headred 42 to molahrac
+The project focuses on POSIX threads, mutexes, condition variables, priority
+queues, deadlock prevention, cooldown timing, burnout detection, and safe
+cleanup of shared resources.
 
-## thread lifecycle
+## Instructions
 
+Build the program from the project directory:
+
+```sh
+make
+```
+
+Run it with these arguments:
+
+```text
+./codexion number_of_coders time_to_burnout time_to_compile \
+time_to_debug time_to_refactor number_of_compiles_required \
+dongle_cooldown scheduler
+```
+
+The scheduler must be either `fifo` or `edf`. Times are expressed in
+milliseconds. For example:
+
+```sh
+./codexion 3 3000 500 500 500 2 500 edf
+```
+
+Useful Makefile commands are `make clean`, `make fclean`, and `make re`.
+
+## Thread Lifecycle
+
+Each coder repeatedly follows this sequence:
+
+```text
+request dongles -> compile -> release dongles -> debug -> refactor
+```
+MORE INFO
 ```
 Start Simulation
       │
@@ -39,6 +75,50 @@ Finish Refactoring
 Immediately try to get 2 dongles again
 ```
 
+The coder holds the required dongle mutexes during compilation. The simulation
+ends when every coder reaches the required compile count or when a coder burns
+out.
+
+## Blocking Cases Handled
+
+- Dongles are locked in a consistent ID order to prevent circular-wait
+      deadlocks.
+- Each dongle has its own mutex, preventing duplicate ownership.
+- Dongle cooldown is checked after release before another acquisition.
+- FIFO requests use heap insertion order.
+- EDF requests use the earliest burnout deadline, with coder ID as a
+      deterministic tie-breaker.
+- A condition variable wakes waiting coders when resources or scheduling state
+      changes.
+- The monitor checks burnout deadlines and stops the simulation when necessary.
+- Output is protected by a print mutex so state messages do not interleave.
+- Initialization counters and flags prevent cleanup from destroying
+      uninitialized synchronization objects.
+- Shared simulation and completion state is protected by the state mutex.
+
+## Thread Synchronization Mechanisms
+
+The program uses POSIX `pthread_mutex_t` objects for each dongle, the priority
+queue, output, coder burnout timestamps, and shared simulation state.
+
+The priority queue mutex protects heap operations and scheduler predicates.
+Dongle mutexes protect ownership and availability changes. Coder burnout data is
+protected by each coder's burnout mutex. The print mutex serializes complete log
+messages.
+
+The `coder_wait_cond` condition variable is the program's event mechanism. A
+coder waits while it is not the scheduler-selected request or while a required
+dongle is unavailable. Resource release and simulation shutdown broadcast the
+condition variable so waiting threads re-check the predicate safely.
+
+The state mutex protects `simulation_running`, `is_finished`, and
+`compiles_done`. For example, the monitor changes the simulation state while a
+coder reads it through synchronized helpers, preventing unsynchronized
+shutdown decisions.
+
+
+
+
 ## Resources
 
 - [the anatomy of execution](https://denim-bosworth-b13.notion.site/The-Anatomy-of-Execution-391e6e3c12ea806abdb7f1e5825bc9d1?source=copy_link)
@@ -65,3 +145,7 @@ Immediately try to get 2 dongles again
 - [Deadlocks](https://denim-bosworth-b13.notion.site/Deadlocks-397e6e3c12ea801a9446efd638a24008?source=copy_link)
 - [Condition Variables](https://denim-bosworth-b13.notion.site/Condition-Variables-397e6e3c12ea8054b084d0763d81fdb1?source=copy_link)
 - [Time Management](https://denim-bosworth-b13.notion.site/Time-Management-399e6e3c12ea80fb9ae1ed8189dcc3e2?source=copy_link)
+
+## AI usage
+AI was used to help review concurrency requirements, identify possible race and
+deadlock paths, suggest focused tests, and improve documentation structure.
