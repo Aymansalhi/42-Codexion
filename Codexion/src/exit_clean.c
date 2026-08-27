@@ -6,11 +6,24 @@
 /*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/10 00:26:28 by molahrac          #+#    #+#             */
-/*   Updated: 2026/08/22 02:05:50 by molahrac         ###   ########.fr       */
+/*   Updated: 2026/08/23 17:06:56 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/codexion.h"
+
+void	clean_and_destroy_mutexes_2(t_state *state)
+{
+	if (state->priority_queue && state->priority_queue->lock_initialized)
+		pthread_mutex_destroy(&state->priority_queue->lock);
+	if (state->print_lock_initialized)
+		pthread_mutex_destroy(&state->print_lock);
+	if (state->state_lock_initialized)
+	{
+		pthread_mutex_destroy(&state->state_lock);
+		state->state_lock_initialized = 0;
+	}
+}
 
 void	clean_and_destroy_mutexes(t_state *state)
 {
@@ -20,7 +33,7 @@ void	clean_and_destroy_mutexes(t_state *state)
 	if (state->coders && state->cfg)
 	{
 		i = 0;
-		while (i < state->cfg->number_of_coders)
+		while (i < state->coders_initialized)
 		{
 			pthread_mutex_destroy(&state->coders[i].mutex_burnout);
 			i++;
@@ -35,9 +48,7 @@ void	clean_and_destroy_mutexes(t_state *state)
 			i++;
 		}
 	}
-	if (state->priority_queue)
-		pthread_mutex_destroy(&state->priority_queue->lock);
-	pthread_mutex_destroy(&state->print_lock);
+	clean_and_destroy_mutexes_2(state);
 }
 
 void	clean_priority_queue(t_state *state)
@@ -53,7 +64,8 @@ void	clean_priority_queue(t_state *state)
 
 void	clean_memory(t_state *state)
 {
-	pthread_cond_destroy(&state->coder_wait_cond);
+	if (state->coder_wait_cond_initialized)
+		pthread_cond_destroy(&state->coder_wait_cond);
 	clean_and_destroy_mutexes(state);
 	if (state->coders)
 		free(state->coders);
