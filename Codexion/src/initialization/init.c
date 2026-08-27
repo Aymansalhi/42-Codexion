@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/08 19:03:48 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/20 03:25:56 by mirr             ###   ########.fr       */
+/*   Created: 2026/08/08 19:03:48 by molahrac          #+#    #+#             */
+/*   Updated: 2026/08/23 17:10:10 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ int	create_coders_and_dongles_and_queue(t_state *state)
 	if (!state->dongels)
 		return (clean_and_print_err(MALLOC_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
-	if (state->cfg->scheduler == SCHEDULER_FIFO)
+	if (strcmp(state->cfg->scheduler, SCHEDULER_FIFO) == 0)
 	{
 		if (init_fifo_queue(state) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
 	}
-	else if (state->cfg->scheduler == SCHEDULER_EDF)
+	else if (strcmp(state->cfg->scheduler, SCHEDULER_EDF) == 0)
 	{
 		if (init_edf_queue(state) == EXIT_FAILURE)
 			return (EXIT_FAILURE);
@@ -71,31 +71,29 @@ int	init_coders(t_state *state)
 			init_coder_fields(&state->coders[i], i,
 				&state->dongels[i], &state->dongels[tmp_wrapper]);
 			state->coders[i].state = state;
-			pthread_mutex_init(&state->coders[i].mutex_burnout, NULL);
+			if (pthread_mutex_init(&state->coders[i].mutex_burnout, NULL) != 0)
+				return (clean_and_print_err("Failed to init coder mutex",
+						NULL, 1, state), EXIT_FAILURE);
+			state->coders_initialized++;
 			i++;
 		}
 	}
 	else if (state->cfg->number_of_coders == 1)
-	{
-		init_coder_fields(&state->coders[0], 0, &state->dongels[0],
-			&state->dongels[0]);
-		state->coders[0].state = state;
-		pthread_mutex_init(&state->coders[0].mutex_burnout, NULL);
-	}
+		if (handle_single_coder_case(state) == EXIT_FAILURE)
+			return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
 int	init_mutexes_and_cond(t_state *state)
 {
-	if (pthread_mutex_init(&state->fifo_queue->lock, NULL) != 0)
-		return (clean_and_print_err(MUTEX_QUEUE_ERROR, NULL, 1, state),
-			EXIT_FAILURE);
 	if (pthread_cond_init(&state->coder_wait_cond, NULL) != 0)
 		return (clean_and_print_err(COND_QUEUE_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
+	state->coder_wait_cond_initialized = 1;
 	if (pthread_mutex_init(&state->print_lock, NULL) != 0)
 		return (clean_and_print_err("Failed to init print mutex",
 				NULL, 1, state), EXIT_FAILURE);
+	state->print_lock_initialized = 1;
 	return (EXIT_SUCCESS);
 }
 
