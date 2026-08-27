@@ -6,7 +6,7 @@
 /*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/15 13:34:07 by molahrac          #+#    #+#             */
-/*   Updated: 2026/08/22 13:32:30 by molahrac         ###   ########.fr       */
+/*   Updated: 2026/08/23 19:17:22 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,14 @@ struct s_state
 	t_dongel			*dongels;
 	t_priority_queue	*priority_queue;
 	pthread_cond_t		coder_wait_cond;
+	int					coder_wait_cond_initialized;
 	int					dongels_initialized;
+	int					coders_initialized;
 	long long			start_time;
 	pthread_mutex_t		print_lock;
+	int					print_lock_initialized;
+	pthread_mutex_t		state_lock;
+	int					state_lock_initialized;
 };
 
 struct s_config
@@ -110,6 +115,7 @@ struct s_priority_queue
 	unsigned long long	next_order;
 	t_queue_mode		mode;
 	pthread_mutex_t		lock;
+	int					lock_initialized;
 };
 
 // @-------------------------------------------- PROTOTYPES ---------
@@ -151,6 +157,13 @@ int			init_priority_queue(t_state *state, t_queue_mode mode);
 void		push_to_priority_queue(t_priority_queue *queue, t_coder *coder);
 void		pop_coder_from_priority_queue(t_priority_queue *queue,
 				t_coder *coder);
+	void		pop_coder_from_priority_queue_locked(t_priority_queue *queue,
+				 t_coder *coder);
+int			compare_coders(t_priority_queue *queue, t_coder *a, t_coder *b);
+void		sift_up(t_priority_queue *queue, int index);
+void		swap_heap_nodes(t_priority_queue *queue, int a, int b);
+int			compare_by_id(t_coder *a, t_coder *b);
+long long	get_deadline(t_coder *coder);
 
 // @-------------------------------------------- PROTOTYPES TIME -----
 long long	get_time_in_ms(void);
@@ -162,15 +175,17 @@ void		init_coder_fields(
 				t_dongel *left,
 				t_dongel *right);
 void		set_burnout(t_coder *coder);
-void		lock_dongles_in_order(t_coder *coder);
-void		unlock_dongles_in_order(t_coder *coder);
+int			simulation_is_running(t_state *state);
+void		stop_simulation(t_state *state);
+int			coder_is_finished(t_coder *coder);
+void		lock_dongles_mutex_in_order(t_coder *coder);
+void		unlock_dongles_mutex_in_order(t_coder *coder);
 
 // @----------------------------------- PROTOTYPES CODER ROUTINE TASKS && utils 
 void		take_dongels(t_coder *coder);
 void		release_dongles(t_coder *coder);
-void		wait_until_scheduler_allows_me(t_coder *coder);
-void		handle_fifo_scheduler(t_coder *coder);
-void		handle_edf_scheduler(t_coder *coder);
+void		wait_for_scheduler_allows_me_and_get_dongles(t_coder *coder);
 int			dongel_ready(t_dongel *dongel, t_state *state);
+int			handle_single_coder_case(t_state *state);
 
 #endif
