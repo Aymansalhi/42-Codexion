@@ -27,8 +27,10 @@ int	init_priority_queue(t_state *state, t_queue_mode mode)
 	state->priority_queue->capacity = state->cfg->number_of_coders;
 	state->priority_queue->next_order = 0;
 	state->priority_queue->mode = mode;
+	state->priority_queue->lock_initialized = 0;
 	if (pthread_mutex_init(&state->priority_queue->lock, NULL) != 0)
 		return (clean_and_print_err(MUTEX_QUEUE_ERROR, NULL, 1, state),
 			EXIT_FAILURE);
+	state->priority_queue->lock_initialized = 1;
 	return (EXIT_SUCCESS);
 }
