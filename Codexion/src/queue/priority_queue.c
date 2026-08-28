@@ -6,12 +6,19 @@
 /*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/22 12:14:00 by molahrac          #+#    #+#             */
-/*   Updated: 2026/08/22 23:39:34 by molahrac         ###   ########.fr       */
+/*   Updated: 2026/08/23 01:33:18 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/codexion.h"
 
+/**
+ * sift_down() - restore the heap by moving an element toward the leaves
+ * until it is no larger than either child, or reaches a valid position
+ *
+ * @queue: the priority queue whose heap array is being fixed
+ * @index: the array position of the element to sift downward
+ */
 static void	sift_down(t_priority_queue *queue, int index)
 {
 	int	left;
@@ -23,12 +30,10 @@ static void	sift_down(t_priority_queue *queue, int index)
 		left = (index * 2) + 1;
 		right = left + 1;
 		smallest = index;
-		if (left < queue->size
-			&& compare_coders(queue, queue->heap[left],
+		if (left < queue->size && compare_coders(queue, queue->heap[left],
 				queue->heap[smallest]) < 0)
 			smallest = left;
-		if (right < queue->size
-			&& compare_coders(queue, queue->heap[right],
+		if (right < queue->size && compare_coders(queue, queue->heap[right],
 				queue->heap[smallest]) < 0)
 			smallest = right;
 		if (smallest == index)
@@ -38,36 +43,46 @@ static void	sift_down(t_priority_queue *queue, int index)
 	}
 }
 
-void	pop_coder_from_priority_queue(t_priority_queue *queue, t_coder *coder)
+void	handle_pop_if_coder_is_not_last(
+		t_priority_queue *queue, int index, int last)
+{
+	int	parent;
+
+	queue->heap[index] = queue->heap[last];
+	queue->heap[index]->queue_index = index;
+	parent = (index - 1) / 2;
+	if (index > 0
+		&& compare_coders(queue, queue->heap[index],
+			queue->heap[parent]) < 0)
+		sift_up(queue, index);
+	else
+		sift_down(queue, index);
+}
+
+void	pop_coder_from_priority_queue_locked(t_priority_queue *queue,
+		t_coder *coder)
 {
 	int	index;
 	int	last;
-	int	parent;
 
 	if (!queue || !coder)
 		return ;
-	pthread_mutex_lock(&queue->lock);
 	index = coder->queue_index;
 	if (index < 0 || index >= queue->size || queue->heap[index] != coder)
-	{
-		pthread_mutex_unlock(&queue->lock);
 		return ;
-	}
 	last = queue->size - 1;
 	coder->queue_index = -1;
 	queue->size--;
 	if (index != last)
-	{
-		queue->heap[index] = queue->heap[last];
-		queue->heap[index]->queue_index = index;
-		parent = (index - 1) / 2;
-		if (index > 0
-			&& compare_coders(queue, queue->heap[index],
-				queue->heap[parent]) < 0)
-			sift_up(queue, index);
-		else
-			sift_down(queue, index);
-	}
+		handle_pop_if_coder_is_not_last(queue, index, last);
+}
+
+void	pop_coder_from_priority_queue(t_priority_queue *queue, t_coder *coder)
+{
+	if (!queue || !coder)
+		return ;
+	pthread_mutex_lock(&queue->lock);
+	pop_coder_from_priority_queue_locked(queue, coder);
 	pthread_mutex_unlock(&queue->lock);
 }
 
