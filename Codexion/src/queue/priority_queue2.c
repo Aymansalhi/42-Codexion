@@ -6,7 +6,7 @@
 /*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/22 13:28:35 by molahrac          #+#    #+#             */
-/*   Updated: 2026/08/22 23:37:02 by molahrac         ###   ########.fr       */
+/*   Updated: 2026/08/23 17:11:19 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	compare_edf_deadline(t_coder *a, t_coder *b)
 	return (compare_by_id(a, b));
 }
 
-static int	compare_coders(t_priority_queue *queue, t_coder *a, t_coder *b)
+int	compare_coders(t_priority_queue *queue, t_coder *a, t_coder *b)
 {
 	if (queue->mode == QUEUE_FIFO)
 		return (compare_fifo_order(a, b));
@@ -53,7 +53,7 @@ static int	compare_coders(t_priority_queue *queue, t_coder *a, t_coder *b)
  * @index: the array position of the element to sift upward
  *         (normally the last slot, right after a push)
  */
-static void	sift_up(t_priority_queue *queue, int index)
+void	sift_up(t_priority_queue *queue, int index)
 {
 	int	parent;
 
