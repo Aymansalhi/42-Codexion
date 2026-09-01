@@ -12,12 +12,12 @@
 
 #include "../../include/codexion.h"
 
-static long long	get_deadline(t_coder *coder)
+long long	get_deadline(t_coder *coder)
 {
 	return (coder->last_compile_start + coder->state->cfg->time_to_burnout);
 }
 
-static int	compare_by_id(t_coder *a, t_coder *b)
+int	compare_by_id(t_coder *a, t_coder *b)
 {
 	if (a->id < b->id)
 		return (-1);
@@ -26,7 +26,7 @@ static int	compare_by_id(t_coder *a, t_coder *b)
 	return (0);
 }
 
-static void	swap_heap_nodes(t_priority_queue *queue, int a, int b)
+void	swap_heap_nodes(t_priority_queue *queue, int a, int b)
 {
 	t_coder	*tmp;
 
