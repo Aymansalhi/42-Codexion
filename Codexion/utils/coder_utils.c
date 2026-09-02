@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   coder_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/14 00:21:13 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/21 10:54:10 by mirr             ###   ########.fr       */
+/*   Created: 2026/08/14 00:21:13 by molahrac          #+#    #+#             */
+/*   Updated: 2026/08/23 19:26:19 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@ void	init_coder_fields(t_coder *coder, int id,
 	coder->id = id;
 	coder->left_dongel = left;
 	coder->right_dongel = right;
+	coder->queue_index = -1;
+	coder->queue_order = 0;
 	coder->is_finished = 0;
 	coder->compiles_done = 0;
 	coder->last_compile_start = 0;
 }
 
-void	lock_dongles_in_order(t_coder *coder)
+void	lock_dongles_mutex_in_order(t_coder *coder)
 {
 	t_dongel	*first;
 	t_dongel	*second;
@@ -44,7 +46,7 @@ void	lock_dongles_in_order(t_coder *coder)
 	pthread_mutex_lock(&second->lock);
 }
 
-void	unlock_dongles_in_order(t_coder *coder)
+void	unlock_dongles_mutex_in_order(t_coder *coder)
 {
 	if (coder->left_dongel == coder->right_dongel)
 	{
@@ -55,27 +57,32 @@ void	unlock_dongles_in_order(t_coder *coder)
 	pthread_mutex_unlock(&coder->right_dongel->lock);
 }
 
-void	continue_until_dongles_are_avaliable(t_coder *coder)
+int	dongels_are_ready(t_coder *coder)
 {
-	int			ready;
-
-	while (coder->state->simulation_running)
-	{
-		lock_dongles_in_order(coder);
-		ready = dongel_ready(coder->left_dongel, coder->state)
-			&& dongel_ready(coder->right_dongel, coder->state);
-		if (ready)
-			break ;
-		unlock_dongles_in_order(coder);
-		usleep(1000);
-	}
+	return (dongel_ready(coder->left_dongel, coder->state)
+		&& dongel_ready(coder->right_dongel, coder->state));
 }
 
-void	wait_until_scheduler_allows_me(t_coder *coder)
+void	wait_for_scheduler_allows_me_and_get_dongles(t_coder *coder)
 {
-	if (strcmp(coder->state->cfg->scheduler, SCHEDULER_EDF) == 0)
-		handle_edf_scheduler(coder);
-	else
-		handle_fifo_scheduler(coder);
-	continue_until_dongles_are_avaliable(coder);
+	t_priority_queue	*queue;
+
+	queue = coder->state->priority_queue;
+	pthread_mutex_lock(&queue->lock);
+	while (simulation_is_running(coder->state)
+		&& (peek_priority_queue(queue) != coder || !dongels_are_ready(coder)))
+	{
+		pthread_cond_wait(
+			&coder->state->coder_wait_cond, &queue->lock);
+	}
+	if (!simulation_is_running(coder->state))
+	{
+		pthread_mutex_unlock(&queue->lock);
+		return ;
+	}
+	lock_dongles_mutex_in_order(coder);
+	coder->left_dongel->available = 0;
+	if (coder->left_dongel != coder->right_dongel)
+		coder->right_dongel->available = 0;
+	pthread_mutex_unlock(&queue->lock);
 }
