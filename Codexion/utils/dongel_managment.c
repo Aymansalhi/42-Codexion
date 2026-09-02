@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dongel_managment.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mirr <mirr@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/08/13 13:28:24 by mirr              #+#    #+#             */
-/*   Updated: 2026/08/21 22:01:27 by mirr             ###   ########.fr       */
+/*   Created: 2026/08/13 13:28:24 by molahrac          #+#    #+#             */
+/*   Updated: 2026/08/23 16:51:36 by molahrac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,28 +29,21 @@ void	take_dongels(t_coder *coder)
 {
 	long long	time_passed;
 
-	if (!coder->state->simulation_running)
+	if (!simulation_is_running(coder->state))
 		return ;
-
-	coder->left_dongel->available = 0;
 	pthread_mutex_lock(&coder->state->print_lock);
 	time_passed = get_time_in_ms() - coder->state->start_time;
 	printf("%lld %d has taken a dongle\n", time_passed, coder->id + 1);
 	if (coder->left_dongel != coder->right_dongel)
 	{
-		coder->right_dongel->available = 0;
 		time_passed = get_time_in_ms() - coder->state->start_time;
 		printf("%lld %d has taken a dongle\n", time_passed, coder->id + 1);
 	}
 	pthread_mutex_unlock(&coder->state->print_lock);
-	unlock_dongles_in_order(coder);
 }
 
 void	release_dongles(t_coder *coder)
 {
-	if (!coder->state->simulation_running)
-		return ;
-	lock_dongles_in_order(coder);
 	coder->left_dongel->available = 1;
 	coder->left_dongel->last_released_ms = get_time_in_ms();
 	if (coder->left_dongel != coder->right_dongel)
@@ -58,10 +51,14 @@ void	release_dongles(t_coder *coder)
 		coder->right_dongel->available = 1;
 		coder->right_dongel->last_released_ms = get_time_in_ms();
 	}
-	unlock_dongles_in_order(coder);
+	unlock_dongles_mutex_in_order(coder);
+	pthread_mutex_lock(&coder->state->priority_queue->lock);
 	if (strcmp(coder->state->cfg->scheduler, SCHEDULER_EDF) == 0)
-		pop_from_edf_queue(coder);
+		pop_coder_from_priority_queue_locked(
+			coder->state->priority_queue, coder);
 	else
-		pop_from_queue(coder);
+		pop_coder_from_priority_queue_locked(
+			coder->state->priority_queue, coder);
 	pthread_cond_broadcast(&coder->state->coder_wait_cond);
+	pthread_mutex_unlock(&coder->state->priority_queue->lock);
 }
