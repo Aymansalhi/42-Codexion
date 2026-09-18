@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: molahrac <molahrac@student.42.fr>          +#+  +:+       +#+        */
+/*   By: molahrac <molahrac@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/23 12:10:39 by molahrac          #+#    #+#             */
-/*   Updated: 2026/08/22 02:04:27 by molahrac         ###   ########.fr       */
+/*   Updated: 2026/09/18 14:16:42 by molahrac        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_validate_field(long val, int field_id)
 {
-	if (field_id == 6 || field_id == 7)
+	if (field_id == 7)
 		return (val >= 0);
 	return (val > 0);
 }

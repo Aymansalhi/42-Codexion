@@ -63,6 +63,9 @@ void	*monitor(void *arg)
 		now = get_time_in_ms();
 		if (monitor_check_coders(state, now))
 			return (NULL);
+		pthread_mutex_lock(&state->priority_queue->lock);
+		pthread_cond_broadcast(&state->coder_wait_cond);
+		pthread_mutex_unlock(&state->priority_queue->lock);
 		usleep(1000);
 	}
 	return (NULL);

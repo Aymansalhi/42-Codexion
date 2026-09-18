@@ -59,8 +59,15 @@ void	unlock_dongles_mutex_in_order(t_coder *coder)
 
 int	dongels_are_ready(t_coder *coder)
 {
-	return (dongel_ready(coder->left_dongel, coder->state)
-		&& dongel_ready(coder->right_dongel, coder->state));
+	int	ready;
+
+	if (coder->left_dongel == coder->right_dongel)
+		return (0);
+	lock_dongles_mutex_in_order(coder);
+	ready = dongel_ready(coder->left_dongel, coder->state)
+		&& dongel_ready(coder->right_dongel, coder->state);
+	unlock_dongles_mutex_in_order(coder);
+	return (ready);
 }
 
 void	wait_for_scheduler_allows_me_and_get_dongles(t_coder *coder)
