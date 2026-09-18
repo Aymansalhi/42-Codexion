@@ -9,7 +9,7 @@ SRC := src/main.c src/parsing.c utils/parsing_utils.c src/exit_clean.c \
 
 OBJ := $(SRC:.c=.o)
 
-CFLAGS := -g -Wall -Wextra -Werror -pthread -fsanitize=address
+CFLAGS := -g -Wall -Wextra -Werror -pthread
 
 all: $(NAME)
 
