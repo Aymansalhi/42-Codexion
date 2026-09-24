@@ -185,6 +185,7 @@ void		unlock_dongles_mutex_in_order(t_coder *coder);
 void		take_dongels(t_coder *coder);
 void		release_dongles(t_coder *coder);
 void		wait_for_scheduler_allows_me_and_get_dongles(t_coder *coder);
+int		coder_is_schedulable(t_coder *coder);
 int			dongel_ready(t_dongel *dongel, t_state *state);
 int			handle_single_coder_case(t_state *state);
 

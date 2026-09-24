@@ -32,7 +32,7 @@ static int	compare_edf_deadline(t_coder *a, t_coder *b)
 		return (-1);
 	if (deadline_a > deadline_b)
 		return (1);
-	return (compare_by_id(a, b));
+	return (compare_fifo_order(a, b));
 }
 
 int	compare_coders(t_priority_queue *queue, t_coder *a, t_coder *b)

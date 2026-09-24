@@ -60,19 +60,49 @@ void	unlock_dongles_mutex_in_order(t_coder *coder)
 int	dongels_are_ready(t_coder *coder)
 {
 	int	ready;
+	t_dongel	*first;
+	t_dongel	*second;
 
 	if (coder->left_dongel == coder->right_dongel)
+		return (0);
+	first = coder->left_dongel;
+	second = coder->right_dongel;
+	if (first->id > second->id)
 	{
-		pthread_mutex_lock(&coder->left_dongel->lock);
-		ready = dongel_ready(coder->left_dongel, coder->state);
-		pthread_mutex_unlock(&coder->left_dongel->lock);
-		return (ready);
+		first = coder->right_dongel;
+		second = coder->left_dongel;
 	}
-	lock_dongles_mutex_in_order(coder);
+	if (pthread_mutex_trylock(&first->lock) != 0)
+		return (0);
+	if (pthread_mutex_trylock(&second->lock) != 0)
+	{
+		pthread_mutex_unlock(&first->lock);
+		return (0);
+	}
 	ready = dongel_ready(coder->left_dongel, coder->state)
 		&& dongel_ready(coder->right_dongel, coder->state);
-	unlock_dongles_mutex_in_order(coder);
+	pthread_mutex_unlock(&second->lock);
+	pthread_mutex_unlock(&first->lock);
 	return (ready);
+}
+
+int	coder_is_schedulable(t_coder *coder)
+{
+	t_priority_queue	*queue;
+	t_coder				*best;
+	int					i;
+
+	queue = coder->state->priority_queue;
+	best = NULL;
+	i = 0;
+	while (i < queue->size)
+	{
+		if (dongels_are_ready(queue->heap[i])
+			&& (!best || compare_coders(queue, queue->heap[i], best) < 0))
+			best = queue->heap[i];
+		i++;
+	}
+	return (best == coder);
 }
 
 void	wait_for_scheduler_allows_me_and_get_dongles(t_coder *coder)
@@ -82,7 +112,7 @@ void	wait_for_scheduler_allows_me_and_get_dongles(t_coder *coder)
 	queue = coder->state->priority_queue;
 	pthread_mutex_lock(&queue->lock);
 	while (simulation_is_running(coder->state)
-		&& (peek_priority_queue(queue) != coder || !dongels_are_ready(coder)))
+		&& !coder_is_schedulable(coder))
 	{
 		pthread_cond_wait(
 			&coder->state->coder_wait_cond, &queue->lock);
