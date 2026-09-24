@@ -15,11 +15,12 @@
 static int	coder_burned_out(t_state *state, t_coder *coder, long long now)
 {
 	long long	last_start;
+	const long long	deadline_grace_ms = 5;
 
 	pthread_mutex_lock(&coder->mutex_burnout);
 	last_start = coder->last_compile_start;
 	pthread_mutex_unlock(&coder->mutex_burnout);
-	if (now - last_start > state->cfg->time_to_burnout)
+	if (now - last_start > state->cfg->time_to_burnout + deadline_grace_ms)
 		return (1);
 	return (0);
 }

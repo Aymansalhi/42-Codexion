@@ -23,7 +23,6 @@ void	request_compile(t_coder *coder)
 void	compile(t_coder *coder)
 {
 	set_burnout(coder);
-	pthread_mutex_lock(&coder->state->print_lock);
 	printf("%lld %d is compiling\n",
 		get_time_in_ms() - coder->state->start_time, coder->id + 1);
 	pthread_mutex_unlock(&coder->state->print_lock);
@@ -68,7 +67,10 @@ void	*coder_thread_routine(void *arg)
 			return (NULL);
 		take_dongels(coder);
 		if (!simulation_is_running(coder->state))
+		{
+			pthread_mutex_unlock(&coder->state->print_lock);
 			return (unlock_dongles_mutex_in_order(coder), NULL);
+		}
 		compile(coder);
 		release_dongles(coder);
 		if (!simulation_is_running(coder->state))

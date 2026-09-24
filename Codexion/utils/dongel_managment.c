@@ -39,7 +39,6 @@ void	take_dongels(t_coder *coder)
 		time_passed = get_time_in_ms() - coder->state->start_time;
 		printf("%lld %d has taken a dongle\n", time_passed, coder->id + 1);
 	}
-	pthread_mutex_unlock(&coder->state->print_lock);
 }
 
 void	release_dongles(t_coder *coder)
