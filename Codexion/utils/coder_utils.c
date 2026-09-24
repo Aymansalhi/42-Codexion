@@ -62,7 +62,12 @@ int	dongels_are_ready(t_coder *coder)
 	int	ready;
 
 	if (coder->left_dongel == coder->right_dongel)
-		return (0);
+	{
+		pthread_mutex_lock(&coder->left_dongel->lock);
+		ready = dongel_ready(coder->left_dongel, coder->state);
+		pthread_mutex_unlock(&coder->left_dongel->lock);
+		return (ready);
+	}
 	lock_dongles_mutex_in_order(coder);
 	ready = dongel_ready(coder->left_dongel, coder->state)
 		&& dongel_ready(coder->right_dongel, coder->state);

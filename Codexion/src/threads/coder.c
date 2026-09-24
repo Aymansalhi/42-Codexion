@@ -58,7 +58,6 @@ void	refactor(t_coder *coder)
 void	*coder_thread_routine(void *arg)
 {
 	t_coder		*coder;
-	int			final_compile;
 
 	coder = (t_coder *)arg;
 	while (!coder_is_finished(coder) && simulation_is_running(coder->state))
@@ -72,11 +71,10 @@ void	*coder_thread_routine(void *arg)
 			return (unlock_dongles_mutex_in_order(coder), NULL);
 		compile(coder);
 		release_dongles(coder);
-		final_compile = coder_is_finished(coder);
-		if (!simulation_is_running(coder->state) && !final_compile)
+		if (!simulation_is_running(coder->state))
 			return (NULL);
 		debug(coder);
-		if (!simulation_is_running(coder->state) && !final_compile)
+		if (!simulation_is_running(coder->state))
 			return (NULL);
 		refactor(coder);
 	}

@@ -33,6 +33,12 @@ static int	monitor_check_coders(t_state *state, long long now)
 	coder_finished = 0;
 	while (i < state->cfg->number_of_coders)
 	{
+		if (coder_is_finished(&state->coders[i]))
+		{
+			coder_finished++;
+			i++;
+			continue ;
+		}
 		if (coder_burned_out(state, &state->coders[i], now))
 		{
 			pthread_mutex_lock(&state->print_lock);
@@ -43,8 +49,6 @@ static int	monitor_check_coders(t_state *state, long long now)
 			pthread_cond_broadcast(&state->coder_wait_cond);
 			return (1);
 		}
-		if (coder_is_finished(&state->coders[i]))
-			coder_finished++;
 		i++;
 	}
 	if (coder_finished == state->cfg->number_of_coders)
