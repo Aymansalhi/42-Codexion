@@ -16,6 +16,8 @@ cleanup of shared resources.
 
 ## Instructions
 
+![e](https://raw.githubusercontent.com/mirr-x/42-CC-1337/refs/heads/main/images/image.png)
+
 Build the program from the project directory:
 
 ```sh
