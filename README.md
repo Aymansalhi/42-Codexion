@@ -3,6 +3,9 @@
 # Codexion
 ![CODEXION_BANNER](https://raw.githubusercontent.com/mirr-x/42-CC-1337/refs/heads/main/images/CODEXION_BANNER.png)
 
+## Multi Threaded Memory Map
+![Multi Threaded Memory Map](https://raw.githubusercontent.com/mirr-x/42-CC-1337/refs/heads/main/images/stack_threds.png)
+
 ## Description
 
 Codexion is a systems-level C project focused on concurrent resource management, where independent coder threads compete for shared dongles under FIFO/EDF scheduling. It tackles deadlock prevention, synchronization, starvation, resource arbitration, and precise timeout detection using POSIX threading primitives.
@@ -97,6 +100,8 @@ out.
 - Shared simulation and completion state is protected by the state mutex.
 
 ## Thread Synchronization Mechanisms
+
+![yes sir](https://raw.githubusercontent.com/mirr-x/42-CC-1337/refs/heads/main/images/multi_threds.png)
 
 The program uses POSIX `pthread_mutex_t` objects for each dongle, the priority
 queue, output, coder burnout timestamps, and shared simulation state.
